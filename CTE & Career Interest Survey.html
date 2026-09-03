@@ -1,0 +1,1735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CTE Career Interest Survey — WCSD</title>
+<style>
+
+/* ─── RESET & TOKENS ──────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --wcsd-navy:    #002875;
+  --wcsd-blue:    #1B5EA6;
+  --wcsd-blue-lt: #E6EDF6;
+  --wcsd-gold:    #C49900;
+  --wcsd-gold-lt: #F7F1D8;
+  --border:       #DDDDDD;
+  --gray-bg:      #F5F5F5;
+  --red:          #C0392B;
+  --green:        #1a5e45;
+  --green-lt:     #eaf2ee;
+  --purple:       #5a3e8a;
+  --purple-lt:    #f0ebfa;
+}
+
+body {
+  font-family: Calibri, Arial, Helvetica, sans-serif;
+  background: var(--gray-bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 16px 40px;
+}
+
+/* ─── CARD SHELL ──────────────────────────────────────────────────────── */
+.card {
+  background: white;
+  max-width: 900px;
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  margin-top: 24px;
+}
+
+.card-header {
+  background: white;
+  border-bottom: 3px solid var(--wcsd-gold);
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.header-logo { flex-shrink: 0; }
+.header-logo img { height: 64px; width: auto; display: block; }
+.header-logo-missing {
+  height: 64px; width: 64px;
+  background: var(--wcsd-navy); border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-weight: 700; font-size: 18px; letter-spacing: 1px;
+}
+.header-text { flex: 1; }
+.card-header h1 { font-size: 20px; font-weight: 700; color: var(--wcsd-navy); line-height: 1.2; }
+.card-header .subtitle { font-size: 12px; color: var(--wcsd-gold); font-weight: 600; margin-top: 2px; letter-spacing: 0.5px; }
+
+.controls-bar {
+  background: var(--wcsd-blue-lt);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 28px;
+  display: none;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--wcsd-navy);
+  font-weight: 600;
+}
+.controls-bar.visible { display: flex; }
+
+.card-body { padding: 24px 28px; }
+
+/* ─── SCREENS ─────────────────────────────────────────────────────────── */
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* ─── TYPOGRAPHY / UTILITY ────────────────────────────────────────────── */
+.section-title { font-size: 19px; font-weight: 700; color: #1a1a1a; margin-bottom: 6px; }
+.section-desc  { font-size: 14px; color: #555; line-height: 1.55; margin-bottom: 16px; }
+.divider { height: 1px; background: var(--border); margin: 14px 0; }
+.small-note { font-size: 12px; color: #999; text-align: center; margin-top: 10px; line-height: 1.5; }
+.error-msg { color: var(--red); font-size: 13px; margin-top: 6px; display: none; }
+.error-msg.show { display: block; }
+.mt-8  { margin-top: 8px; }
+.mt-12 { margin-top: 12px; }
+.mt-16 { margin-top: 16px; }
+.mt-20 { margin-top: 20px; }
+
+/* ─── FORMS ───────────────────────────────────────────────────────────── */
+.form-group { margin-bottom: 14px; }
+.form-label { display: block; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 5px; }
+.form-input, .form-select {
+  width: 100%; padding: 8px 12px;
+  border: 1px solid var(--border); border-radius: 6px;
+  font-family: inherit; font-size: 15px; color: #1a1a1a;
+  background: white; outline: none; transition: border-color 0.15s;
+}
+.form-input:focus, .form-select:focus { border-color: var(--wcsd-blue); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* ─── BUTTONS ─────────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 10px 24px; border-radius: 6px;
+  font-family: inherit; font-size: 15px; font-weight: 600;
+  cursor: pointer; border: none; transition: opacity 0.15s, transform 0.1s;
+  line-height: 1.3;
+}
+.btn:active { transform: scale(0.98); }
+.btn-primary { background: var(--wcsd-navy); color: white; }
+.btn-primary:hover:not(:disabled) { opacity: 0.9; }
+.btn-outline { background: white; color: var(--wcsd-navy); border: 1.5px solid var(--wcsd-navy); }
+.btn-outline:hover { background: var(--wcsd-blue-lt); }
+.btn-block { width: 100%; }
+.btn-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+/* ─── PROGRESS BAR ────────────────────────────────────────────────────── */
+.progress-wrap { margin-bottom: 22px; }
+.progress-label {
+  font-size: 12px; color: #666; margin-bottom: 5px;
+  display: flex; justify-content: space-between;
+}
+.progress-track { height: 7px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--wcsd-blue); border-radius: 4px; transition: width 0.35s ease; }
+
+/* ─── MIDDLE SCHOOL SELECTOR ──────────────────────────────────────────── */
+.ms-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.ms-btn {
+  width: 100%; text-align: left; padding: 10px 14px;
+  border-radius: 8px; border: 1.5px solid var(--border);
+  background: white; font-family: inherit; font-size: 14px;
+  color: #1a1a1a; cursor: pointer; line-height: 1.35;
+  transition: border-color 0.12s, background 0.12s, color 0.12s;
+}
+.ms-btn:hover { border-color: var(--wcsd-blue); background: var(--wcsd-blue-lt); }
+.ms-btn.selected { border-color: var(--wcsd-navy); background: var(--wcsd-navy); color: white; }
+.ms-btn.other-btn { border-style: dashed; color: #888; font-style: italic; }
+.ms-btn.other-btn:hover { border-color: #aaa; background: var(--gray-bg); color: #555; }
+.ms-btn.other-btn.selected { border-style: solid; background: #555; color: white; font-style: normal; }
+
+/* ─── SURVEY QUESTION ─────────────────────────────────────────────────── */
+.question-text {
+  font-size: 18px; font-weight: 700; color: #1a1a1a;
+  line-height: 1.4; margin-bottom: 18px;
+}
+.option-list { display: flex; flex-direction: column; gap: 8px; }
+.option-btn {
+  width: 100%; text-align: left; padding: 12px 16px;
+  border-radius: 8px; border: 1.5px solid var(--border);
+  background: white; font-family: inherit; font-size: 15px;
+  color: #1a1a1a; cursor: pointer; line-height: 1.45;
+  transition: border-color 0.12s, background 0.12s, color 0.12s;
+}
+.option-btn:hover { border-color: var(--wcsd-blue); background: var(--wcsd-blue-lt); }
+.option-btn.selected { border-color: var(--wcsd-navy); background: var(--wcsd-navy); color: white; }
+.option-btn.undecided-opt { border-style: dashed; color: #888; font-style: italic; }
+.option-btn.undecided-opt:hover { border-color: #aaa; background: var(--gray-bg); color: #555; }
+.option-btn.undecided-opt.selected { border-style: solid; border-color: #666; background: #666; color: white; font-style: normal; }
+.option-btn:disabled { cursor: default; pointer-events: none; }
+
+.survey-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; gap: 10px; }
+.survey-hint { font-size: 12px; color: #aaa; margin-top: 10px; text-align: center; }
+
+/* ─── RESULTS ─────────────────────────────────────────────────────────── */
+.results-banner {
+  background: var(--wcsd-gold-lt);
+  border: 1px solid var(--wcsd-gold);
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #4a3500;
+}
+.results-banner strong { color: var(--wcsd-navy); font-size: 15px; display: block; margin-bottom: 4px; }
+
+.explorer-banner {
+  background: var(--wcsd-blue-lt);
+  border: 1px solid var(--wcsd-blue);
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #0a2a60;
+}
+.explorer-banner strong { display: block; font-size: 15px; margin-bottom: 4px; }
+
+/* Top cluster chips */
+.cluster-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
+.cluster-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--wcsd-navy); color: white;
+  border-radius: 20px; padding: 4px 12px;
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  border: none; font-family: inherit;
+  transition: opacity 0.12s;
+}
+.cluster-chip:hover { opacity: 0.85; }
+.cluster-chip.rank2 { background: var(--wcsd-blue); }
+.cluster-chip.rank3 { background: #7a9ec8; }
+
+/* Results tier sections */
+.results-tier {
+  border-radius: 8px;
+  border: 1.5px solid var(--border);
+  margin-bottom: 14px;
+  overflow: hidden;
+}
+.results-tier-header {
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 14px;
+}
+.tier-zoned  .results-tier-header { background: var(--wcsd-blue-lt); color: var(--wcsd-navy); }
+.tier-apply  .results-tier-header { background: var(--wcsd-gold-lt); color: #5a3500; }
+.tier-charter .results-tier-header { background: var(--green-lt);    color: var(--green); }
+.tier-soc    .results-tier-header { background: var(--purple-lt);    color: var(--purple); }
+
+.tier-icon { font-size: 18px; }
+.tier-badge {
+  margin-left: auto;
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.5px; padding: 2px 7px; border-radius: 10px;
+  opacity: 0.75;
+}
+.tier-zoned  .tier-badge { background: var(--wcsd-navy); color: white; }
+.tier-apply  .tier-badge { background: #c49900; color: white; }
+.tier-charter .tier-badge { background: var(--green); color: white; }
+.tier-soc    .tier-badge { background: var(--purple); color: white; }
+
+.results-tier-body { padding: 12px 16px; }
+
+/* School block inside a tier */
+.school-block { margin-bottom: 18px; }
+.school-block:last-child { margin-bottom: 0; }
+.school-block-name {
+  font-size: 15px; font-weight: 700; color: var(--wcsd-navy);
+  margin-bottom: 4px; display: flex; align-items: center; gap: 8px;
+  background: var(--wcsd-blue-lt);
+  border-left: 4px solid var(--wcsd-navy);
+  padding: 8px 12px;
+  border-radius: 0 6px 6px 0;
+}
+.school-block-name a {
+  color: inherit; text-decoration: none;
+}
+.school-block-name a:hover { text-decoration: underline; }
+.match-note {
+  font-size: 12px; color: #666; font-style: italic;
+  padding: 5px 0 8px 4px; border-bottom: 1px solid #eee; margin-bottom: 2px;
+}
+.school-type-badge {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.3px; padding: 1px 6px; border-radius: 8px;
+}
+.badge-hs      { background: var(--wcsd-blue-lt); color: var(--wcsd-navy); border: 1px solid #aac0df; }
+.badge-apply   { background: var(--wcsd-gold-lt); color: #6b4500;          border: 1px solid #d4b060; }
+.badge-charter { background: var(--green-lt);     color: var(--green);     border: 1px solid #7dbf9a; }
+.badge-soc     { background: var(--purple-lt);    color: var(--purple);    border: 1px solid #b09fd4; }
+
+.prog-row {
+  display: flex; align-items: flex-start; gap: 8px;
+  padding: 6px 0 6px 16px; border-bottom: 1px solid #f0f0f0; font-size: 14px;
+}
+.prog-row:last-child { border-bottom: none; }
+.prog-name { flex: 1; color: #1a1a1a; font-weight: 600; }
+.prog-note { font-size: 12px; color: #888; font-style: italic; margin-top: 2px; display: block; }
+.no-match-note { font-size: 13px; color: #888; font-style: italic; padding: 4px 0; }
+
+.milsci-row {
+  display: flex; align-items: center; gap: 8px; margin-top: 8px;
+  padding: 7px 10px; background: var(--green-lt);
+  border-radius: 6px; font-size: 13px; color: var(--green); font-weight: 600;
+  border: 1px solid #b0d8c0;
+}
+.milsci-branch { font-size: 12px; color: #3a8a60; font-weight: 400; margin-left: 4px; }
+
+/* All-scores panel */
+.all-scores-toggle {
+  font-size: 13px; color: var(--wcsd-blue); font-weight: 600;
+  background: none; border: none; cursor: pointer;
+  padding: 0; font-family: inherit; text-decoration: underline;
+  display: block; margin: 10px 0 6px;
+}
+.all-scores-panel { display: none; background: var(--gray-bg); border-radius: 6px; padding: 12px 14px; margin-bottom: 4px; }
+.all-scores-panel.open { display: block; }
+.all-score-row { display: flex; align-items: center; gap: 10px; margin-bottom: 7px; font-size: 13px; }
+.all-score-row:last-child { margin-bottom: 0; }
+.all-score-name { min-width: 220px; color: #333; font-weight: 600; }
+.all-score-bar-track { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.all-score-bar-fill { height: 100%; width: 0%; background: #b8cce6; border-radius: 3px; transition: width 0.55s ease; }
+.all-score-bar-fill.hi { background: var(--wcsd-blue); }
+.all-score-pct { font-size: 12px; color: #777; min-width: 34px; text-align: right; }
+
+/* Export + counselor box */
+.export-box {
+  background: var(--wcsd-blue-lt);
+  border: 1px solid #b0c4de;
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-top: 18px;
+}
+.export-box-title { font-size: 14px; font-weight: 700; color: var(--wcsd-navy); margin-bottom: 5px; }
+.export-box-desc  { font-size: 13px; color: #333; line-height: 1.55; margin-bottom: 10px; }
+
+.counselor-box {
+  background: var(--gray-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-top: 18px;
+  font-size: 13px;
+  color: #444;
+  line-height: 1.6;
+}
+.results-footer {
+  margin-top: 20px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: #aaa;
+  text-align: center;
+  line-height: 1.6;
+}
+.counselor-box-title { font-size: 13px; font-weight: 700; color: #1a1a1a; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* SOC note */
+.soc-note {
+  font-size: 13px; color: #555; line-height: 1.6; padding: 4px 0;
+}
+.soc-link { color: var(--wcsd-blue); font-weight: 600; }
+
+/* ─── CLUSTER DETAIL ──────────────────────────────────────────────────── */
+.detail-header {
+  background: var(--wcsd-navy); color: white;
+  border-radius: 8px; padding: 16px 18px; margin-bottom: 14px;
+}
+.detail-icon { font-size: 32px; margin-bottom: 4px; display: block; }
+.detail-cluster-name { font-size: 20px; font-weight: 700; margin-bottom: 3px; }
+.detail-tagline   { font-size: 13px; color: #adc8f5; }
+.detail-section   { margin-bottom: 12px; }
+.detail-section h3 { font-size: 14px; font-weight: 700; color: var(--wcsd-navy); margin-bottom: 5px; }
+.detail-section p  { font-size: 14px; color: #444; line-height: 1.6; }
+
+.detail-prog-list { margin-top: 10px; }
+.detail-prog-item {
+  border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px;
+  margin-bottom: 8px;
+}
+.detail-prog-name { font-size: 14px; font-weight: 700; color: #1a1a1a; margin-bottom: 6px; }
+.detail-school-pills { display: flex; flex-wrap: wrap; gap: 5px; }
+
+/* School pills */
+.school-pill {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 8px; border-radius: 12px;
+  font-size: 12px; font-weight: 600; line-height: 1.4;
+}
+.school-pill.hs      { background: var(--wcsd-blue-lt); color: var(--wcsd-navy); border: 1px solid #aac0df; }
+.school-pill.apply   { background: var(--wcsd-gold-lt); color: #6b4500;          border: 1px solid #d4b060; }
+.school-pill.charter { background: var(--green-lt);     color: var(--green);     border: 1px solid #7dbf9a; }
+.school-pill.my-school { background: var(--wcsd-navy); color: white; border: none; }
+.pill-type { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; opacity: 0.6; margin-left: 2px; }
+
+/* ─── PRINT STYLES ────────────────────────────────────────────────────── */
+.no-print { }
+.print-only { display: none; }
+
+@media print {
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  body { background: white; padding: 0; margin: 0; font-size: 12pt; }
+
+  .card { border: none; border-radius: 0; margin: 0; max-width: 100%; box-shadow: none; }
+  .card-header { border-bottom: 3px solid #C49900; padding: 12px 20px; }
+  .card-header h1 { font-size: 16pt; }
+  .card-header .subtitle { font-size: 10pt; }
+  .header-logo img { height: 48px; }
+  .card-body { padding: 16px 20px; }
+
+  /* Hide everything except results screen */
+  .controls-bar,
+  #screen-welcome,
+  #screen-school,
+  #screen-survey,
+  #screen-detail,
+  .all-scores-toggle,
+  .all-scores-panel,
+  .no-print { display: none !important; }
+
+  /* Force results screen visible */
+  #screen-results { display: block !important; }
+
+  /* Show print-only elements */
+  .print-only { display: block !important; }
+
+  /* Tier headers — keep background colors */
+  .results-tier { border: 1.5px solid #ccc; break-inside: avoid; margin-bottom: 10px; }
+  .tier-zoned  .results-tier-header { background: #E6EDF6 !important; color: #002875 !important; }
+  .tier-apply  .results-tier-header { background: #F7F1D8 !important; color: #5a3500 !important; }
+  .tier-charter .results-tier-header { background: #eaf2ee !important; color: #1a5e45 !important; }
+  .tier-soc    .results-tier-header { background: #f0ebfa !important; color: #5a3e8a !important; }
+
+  .results-tier-body { padding: 8px 14px; }
+  .results-tier-header { padding: 7px 14px; font-size: 11pt; }
+
+  /* Cluster chips — print as bordered text */
+  .cluster-chips { margin-bottom: 10px; }
+  .cluster-chip { background: #002875 !important; color: white !important; font-size: 10pt; padding: 3px 10px; }
+
+  /* Banners */
+  .results-banner { background: #F7F1D8 !important; border: 1px solid #C49900; padding: 10px 14px; font-size: 11pt; }
+  .explorer-banner { background: #E6EDF6 !important; border: 1px solid #1B5EA6; padding: 10px 14px; font-size: 11pt; }
+
+  /* Program rows */
+  .prog-row { font-size: 11pt; padding: 4px 0; }
+  .milsci-row { background: #eaf2ee !important; font-size: 10pt; padding: 5px 8px; }
+
+  /* Counselor box — keep for print, it's useful for parents too */
+  .counselor-box { background: #f5f5f5 !important; border: 1px solid #ccc; font-size: 10pt; }
+
+  /* Export box — hide buttons, show print note */
+  .export-box { display: none !important; }
+
+  /* SOC link — show as plain text */
+  .soc-link { color: #002875; text-decoration: underline; }
+
+  /* Page setup */
+  @page { margin: 0.6in 0.7in; size: letter; }
+
+  /* Footer */
+  .results-footer {
+    margin-top: 12px;
+    padding-top: 8px;
+    border-top: 1px solid #ccc;
+    font-size: 9pt;
+    color: #888;
+    text-align: center;
+  }
+}
+
+/* ─── RESPONSIVE ──────────────────────────────────────────────────────── */
+@media (max-width: 580px) {
+  .form-row      { grid-template-columns: 1fr; }
+  .ms-grid       { grid-template-columns: 1fr; }
+  .card-body     { padding: 14px 16px; }
+  .card-header   { padding: 12px 14px; gap: 12px; }
+  .header-logo img { height: 48px; }
+  .controls-bar  { padding: 8px 16px; }
+  .all-score-name { min-width: 140px; font-size: 12px; }
+  .question-text { font-size: 16px; }
+  .option-btn    { font-size: 14px; padding: 10px 14px; }
+  .ms-btn        { font-size: 13px; }
+}
+
+</style>
+</head>
+<body>
+
+<div class="card">
+
+  <!-- HEADER -->
+  <div class="card-header">
+    <div class="header-logo">
+      <img src="wcsd-cte-logo.jpg" alt="WCSD Career &amp; Technical Education"
+           onerror="this.parentElement.innerHTML='<div class=\'header-logo-missing\'>WCSD</div>'">
+    </div>
+    <div class="header-text">
+      <h1>CTE Career Interest Survey</h1>
+      <div class="subtitle">Washoe County School District &nbsp;·&nbsp; Career &amp; Technical Education</div>
+    </div>
+  </div>
+
+  <!-- CONTROLS BAR -->
+  <div class="controls-bar" id="controls-bar">
+    <span id="ctrl-student"></span>
+    <span style="margin-left:auto;font-weight:400;color:#555;" id="ctrl-progress"></span>
+  </div>
+
+  <div class="card-body">
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!-- SCREEN 1: WELCOME / INTAKE                                      -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <div class="screen active" id="screen-welcome">
+
+      <div class="section-title">Discover Your CTE Path</div>
+      <div class="section-desc">
+        This quick survey points you toward WCSD Career &amp; Technical Education programs
+        that match how you like to work and what excites you. No right or wrong answers —
+        just be honest. It takes about 3–4 minutes, and your results can be shared with
+        your counselor to help plan your high school path.
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="inp-first">First Name</label>
+          <input class="form-input" type="text" id="inp-first" placeholder="First name" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="inp-last">Last Name</label>
+          <input class="form-input" type="text" id="inp-last" placeholder="Last name" autocomplete="off">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="inp-id">Student ID Number <span style="font-weight:400;color:#888;">(if you know it or have one)</span></label>
+          <input class="form-input" type="text" id="inp-id" placeholder="e.g. 123456 — leave blank if out of district" autocomplete="off" inputmode="numeric">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="inp-grade">Grade</label>
+          <select class="form-select" id="inp-grade">
+            <option value="">— Select grade —</option>
+            <option value="6">6th Grade</option>
+            <option value="7">7th Grade</option>
+            <option value="8">8th Grade</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="welcome-err" class="error-msg">Please fill in all fields before continuing.</div>
+      <button class="btn btn-primary btn-block mt-12" onclick="goToSchoolSelector()">Next: Pick Your School →</button>
+      <div class="small-note">
+        Your answers are not sent to any server. Download your results at the end to share with your counselor.
+      </div>
+
+    </div><!-- /#screen-welcome -->
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!-- SCREEN 2: MIDDLE SCHOOL SELECTOR                                -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <div class="screen" id="screen-school">
+
+      <div class="section-title" style="margin-bottom:4px;">What middle school do you attend?</div>
+      <div class="section-desc">
+        We'll use this to show you which CTE programs are available at your future high school
+        and how to access programs at other WCSD campuses.
+      </div>
+
+      <div class="ms-grid" id="ms-grid"></div>
+
+      <div id="school-err" class="error-msg">Please select your middle school to continue.</div>
+      <div class="btn-row mt-12">
+        <button class="btn btn-outline" onclick="backToWelcome()">← Back</button>
+      </div>
+
+    </div><!-- /#screen-school -->
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!-- SCREEN 3: SURVEY                                                -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <div class="screen" id="screen-survey">
+
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span id="survey-q-label">Question 1 of 10</span>
+          <span id="survey-pct-label">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="survey-prog-fill" style="width:0%"></div>
+        </div>
+      </div>
+
+      <div id="survey-content"></div>
+
+      <div class="survey-nav">
+        <button class="btn btn-outline" id="survey-back-btn" onclick="surveyBack()" style="width:120px;display:none;">← Back</button>
+        <div style="flex:1;"></div>
+      </div>
+      <div class="survey-hint">Pick the option that feels most like you — tap to select and continue.</div>
+
+    </div><!-- /#screen-survey -->
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!-- SCREEN 4: RESULTS                                               -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <div class="screen" id="screen-results">
+      <div id="results-content"></div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!-- SCREEN 5: CLUSTER DETAIL                                        -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <div class="screen" id="screen-detail">
+      <div id="detail-content"></div>
+      <button class="btn btn-outline mt-20" onclick="backToResults()" style="width:220px;">← Back to My Results</button>
+    </div>
+
+  </div><!-- /.card-body -->
+</div><!-- /.card -->
+
+<script>
+'use strict';
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SCHOOL LOOKUP
+// type: 'hs' = zoned comprehensive HS
+//       'apply' = district-wide application school (AACT, DSCTEA)
+//       'charter' = lottery-based charter (Coral, ACE)
+// ═══════════════════════════════════════════════════════════════════════════
+const SCHOOL_LABELS = {
+  DRHS:    { name: 'Damonte Ranch High School',             type: 'hs',      url: 'https://damonteranch.washoeschools.net/' },
+  Galena:  { name: 'Galena High School',                    type: 'hs',      url: 'https://galena.washoeschools.net/' },
+  Hug:     { name: 'Procter R. Hug High School',            type: 'hs',      url: 'https://hug.washoeschools.net/' },
+  Incline: { name: 'Incline High School',                   type: 'hs',      url: 'https://inclinehs.washoeschools.net/' },
+  McQueen: { name: 'Robert McQueen High School',            type: 'hs',      url: 'https://mcqueen.washoeschools.net/' },
+  NVHS:    { name: 'North Valleys High School',             type: 'hs',      url: 'https://northvalleys.washoeschools.net/' },
+  Reed:    { name: 'Edward C. Reed High School',            type: 'hs',      url: 'https://reed.washoeschools.net/' },
+  Reno:    { name: 'Reno High School',                      type: 'hs',      url: 'https://reno.washoeschools.net/' },
+  Sparks:  { name: 'Sparks High School',                    type: 'hs',      url: 'https://sparkshs.washoeschools.net/' },
+  SSHS:    { name: 'Spanish Springs High School',           type: 'hs',      url: 'https://spanishspringshs.washoeschools.net/' },
+  Wooster: { name: 'Earl Wooster High School',              type: 'hs',      url: 'https://wooster.washoeschools.net/' },
+  AACT:    { name: 'Academy of Arts, Careers & Technology (AACT)', type: 'apply',   url: 'https://aact.washoeschools.net/' },
+  DSCTEA:  { name: 'Debbie Smith CTE Academy (DSCTEA)',     type: 'apply',   url: 'https://debbiesmith.washoeschools.net/' },
+  ACE:     { name: 'Academy for Career Education',          type: 'charter', url: 'https://www.acehighschool.org/' },
+  Coral:   { name: 'Coral Academy of Science',              type: 'charter', url: 'https://coralacademyofscience.org/' }
+};
+
+// JROTC branch by school (all other HS → AJROTC)
+const JROTC_BRANCH = {
+  NVHS: 'Air Force JROTC (AFJROTC)',
+  Reed: 'Navy JROTC (NJROTC)',
+  DRHS: 'Navy JROTC (NJROTC)'
+};
+function jrotcBranch(schoolId) {
+  return JROTC_BRANCH[schoolId] || 'Army JROTC (AJROTC)';
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MIDDLE SCHOOL → HIGH SCHOOL FEEDER MAP
+// zoned[]  = primary zoned HS(es)
+// also[]   = secondary possible HS (address-dependent splits)
+// splitNote = human-readable note for split zones
+// ═══════════════════════════════════════════════════════════════════════════
+const MIDDLE_SCHOOLS = {
+  Billinghurst: { name: 'Billinghurst Middle School',        zoned: ['McQueen'] },
+  Clayton:      { name: 'Clayton PRE-AP Academy',            zoned: ['Reno'], also: ['McQueen','Hug'],
+                  splitNote: 'Small portions route to McQueen or Hug based on home address.' },
+  ColdSprings:  { name: 'Cold Springs Middle School',        zoned: ['NVHS'] },
+  Depoali:      { name: 'Depoali Middle School',             zoned: ['DRHS'], also: ['Wooster'],
+                  splitNote: 'Some students route to Wooster based on home address.' },
+  Dilworth:     { name: 'Dilworth Middle School',            zoned: ['Sparks'] },
+  DesertSkies:  { name: 'Desert Skies Middle School',        zoned: ['Hug'] },
+  Incline:      { name: 'Incline Middle School',             zoned: ['Incline'] },
+  MarceHerz:    { name: 'Marce Herz Middle School',          zoned: ['Galena'] },
+  Mendive:      { name: 'Mendive Middle School',             zoned: ['Reed'] },
+  OBrien:       { name: "O'Brien Middle School",             zoned: ['NVHS'] },
+  Pine:         { name: 'Pine Middle School',                zoned: ['DRHS','Wooster'],
+                  splitNote: 'Pine has true split zoning — your high school depends on your home address.' },
+  Shaw:         { name: 'Shaw Middle School',                zoned: ['SSHS'] },
+  SkyRanch:     { name: 'Sky Ranch Middle School',           zoned: ['SSHS'] },
+  SparksMS:     { name: 'Sparks Middle School',              zoned: ['Sparks'] },
+  Swope:        { name: 'Swope Middle School',               zoned: ['Reno'] },
+  Traner:       { name: 'Traner Middle School',              zoned: ['Hug'] },
+  Vaughn:       { name: 'Vaughn Middle School',              zoned: ['Wooster'], also: ['DRHS'],
+                  splitNote: 'Some students route to Damonte Ranch based on home address.' },
+  Other:        { name: 'Other / Not Sure',                  zoned: [],
+                  splitNote: 'Talk to your counselor to find out which high school you are zoned for.' }
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// CAREER CLUSTERS  (14 total)
+// Each cluster.programs is an array of { name, schools[], note? }
+// Source: WCSD CTE Programs spreadsheet
+// ═══════════════════════════════════════════════════════════════════════════
+const CLUSTERS = {
+  agfnr: {
+    name: 'Agriculture, Food & Natural Resources',
+    shortName: 'Agriculture & Natural Resources',
+    icon: '🌱',
+    tagline: 'Work with land, crops, animals, and agricultural systems.',
+    match_desc: 'You\'re drawn to outdoor, hands-on work connected to the natural world — whether that\'s farming, working with animals, managing agricultural equipment, or learning what keeps ranches and farms running.',
+    careers: 'Agricultural Mechanic, Farm Manager, Animal Scientist, Plant Scientist, Irrigation Specialist, Livestock Manager, Rangeland Manager, Agricultural Educator.',
+    programs: [
+      { name: 'Ag Welding, Power & Structure Technology', schools: ['NVHS'] },
+      { name: 'Animal Systems',                           schools: ['DSCTEA','NVHS'] },
+      { name: 'Plant Systems',                            schools: ['DSCTEA','NVHS','Wooster'] }
+    ]
+  },
+  archi: {
+    name: 'Architecture & Construction',
+    shortName: 'Architecture & Construction',
+    icon: '🏗️',
+    tagline: 'Design, plan, and build the structures people live and work in.',
+    match_desc: 'You like seeing big projects come together — reading blueprints, framing walls, pouring concrete, and being part of a construction project from foundation to finish.',
+    careers: 'Carpenter, General Contractor, Architect, Civil Engineer, Structural Engineer, Building Inspector, Estimator, Drafter.',
+    programs: [
+      { name: 'Building Trades in Construction Technology', schools: ['ACE','DSCTEA','McQueen'] }
+    ]
+  },
+  arts: {
+    name: 'Arts, A/V Technology & Communication',
+    shortName: 'Arts, Media & Communication',
+    icon: '🎬',
+    tagline: 'Create content, design visuals, and tell stories through media.',
+    match_desc: 'You have a creative and communicative streak — you like making things that look great, tell a story, or reach an audience through video, design, or live performance.',
+    careers: 'Graphic Designer, Filmmaker, Video Producer, Multimedia Artist, Theatre Technician, Social Media Manager, Content Creator, Broadcast Technician.',
+    programs: [
+      { name: 'Graphic Design',           schools: ['AACT','SSHS'] },
+      { name: 'Multimedia Communications',schools: ['AACT','DSCTEA','NVHS','Reno','SSHS'] },
+      { name: 'Theatre Technology',        schools: ['DRHS','NVHS'] },
+      { name: 'Video Production',          schools: ['NVHS','SSHS'] }
+    ]
+  },
+  bizadm: {
+    name: 'Business Management & Administration',
+    shortName: 'Business & Marketing',
+    icon: '💼',
+    tagline: 'Plan, organize, and lead businesses, teams, and marketing efforts.',
+    match_desc: 'You think strategically — you like understanding how businesses work, organizing people and resources, and figuring out how to reach and serve customers.',
+    careers: 'Business Manager, Marketing Specialist, Entrepreneur, Sales Manager, Brand Strategist, Operations Manager, Retail Director.',
+    programs: [
+      { name: 'Business Management', schools: ['AACT','Reno','SSHS'] },
+      { name: 'Marketing',           schools: ['AACT','DSCTEA'] }
+    ]
+  },
+  edtrain: {
+    name: 'Education & Training',
+    shortName: 'Education & Training',
+    icon: '📚',
+    tagline: 'Teach, coach, and guide others to learn and grow.',
+    match_desc: 'You find real satisfaction in helping other people learn and develop. The idea of teaching, coaching, or designing learning experiences genuinely appeals to you.',
+    careers: 'Teacher, Coach, Early Childhood Educator, Training Specialist, School Counselor, Instructional Designer, Curriculum Developer.',
+    programs: [
+      { name: 'Teaching & Training', schools: ['DSCTEA','Sparks','SSHS'] }
+    ]
+  },
+  govpa: {
+    name: 'Government & Public Administration',
+    shortName: 'Military Science & Leadership',
+    icon: '🎖️',
+    tagline: 'Lead in uniform, serve a mission, and be part of something bigger than yourself.',
+    match_desc: 'You\'re drawn to structure, leadership, and service — the idea of being part of a mission-driven organization where discipline, teamwork, and purpose define every day.',
+    careers: 'Active Military Service, National Guard, Government Service, Civil Service, Defense Contractor, Emergency Management, Executive Leadership, Diplomatic Service.',
+    programs: [
+      { name: 'Military Science (JROTC)',
+        schools: ['DRHS','Galena','Hug','Incline','McQueen','NVHS','Reed','Reno','Sparks','SSHS','Wooster'],
+        note: 'AFJROTC at North Valleys · NJROTC at Reed & Damonte Ranch · AJROTC at all others. JROTC does not obligate you to join the military.' }
+    ]
+  },
+  health: {
+    name: 'Health Science',
+    shortName: 'Health Science',
+    icon: '🏥',
+    tagline: 'Prepare for careers in healthcare, medicine, and human wellness.',
+    match_desc: 'You care about people\'s health and wellbeing, and you\'re drawn to the science and skill behind medicine, emergency care, and clinical health work.',
+    careers: 'Nurse, Physician, EMT/Paramedic, Medical Assistant, Sports Medicine Trainer, Biomedical Researcher, Physical Therapist, Respiratory Therapist.',
+    programs: [
+      { name: 'Biomedical',                        schools: ['Coral','DSCTEA','Reed'] },
+      { name: 'Community Health Science',           schools: ['NVHS'] },
+      { name: 'Emergency Medical Technician (EMT)', schools: ['AACT'] },
+      { name: 'Nursing Assistant',                  schools: ['DSCTEA'] },
+      { name: 'Sports Medicine',                    schools: ['AACT','Hug','Reno','SSHS'] }
+    ]
+  },
+  hosp: {
+    name: 'Hospitality & Tourism',
+    shortName: 'Culinary Arts & Hospitality',
+    icon: '🍽️',
+    tagline: 'Create memorable food and hospitality experiences for guests.',
+    match_desc: 'You love creating food and experiences for others — the craft of professional cooking, the energy of a kitchen or event, and the satisfaction of people genuinely enjoying what you made.',
+    careers: 'Chef, Pastry Chef, Restaurant Manager, Catering Coordinator, Hotel Manager, Event Planner, Food Service Director, Sommelier, Baker.',
+    programs: [
+      { name: 'Culinary Arts',         schools: ['AACT','DRHS','DSCTEA','Galena','Hug','Incline','McQueen','NVHS','Reed','Sparks'] },
+      { name: 'Hospitality & Tourism', schools: ['DSCTEA'] }
+    ]
+  },
+  humanserv: {
+    name: 'Human Services',
+    shortName: 'Human Services',
+    icon: '🤝',
+    tagline: 'Support families, individuals, and communities in need.',
+    match_desc: 'You genuinely care about people going through hard times. Social work, family support, counseling, and community services feel like a natural calling for you.',
+    careers: 'Social Worker, Family Counselor, Child Welfare Specialist, Community Health Worker, Case Manager, Youth Advocate, Human Services Coordinator.',
+    programs: [
+      { name: 'Family and Consumer Sciences', schools: ['SSHS'] },
+      { name: 'Human & Social Services',      schools: ['Hug','Reed'] }
+    ]
+  },
+  infotech: {
+    name: 'Information Technology',
+    shortName: 'Information Technology',
+    icon: '💻',
+    tagline: 'Build, secure, and manage the technology systems that power everything.',
+    match_desc: 'You\'re at home with technology — coding, cybersecurity, networking, or building software. You like understanding and controlling how digital systems work at a deep level.',
+    careers: 'Software Developer, Cybersecurity Analyst, Network Administrator, Web Developer, IT Support Specialist, Database Administrator, Cloud Engineer.',
+    programs: [
+      { name: 'Advanced Computer Science', schools: ['DRHS','NVHS','SSHS'] },
+      { name: 'Cybersecurity',             schools: ['NVHS','SSHS'] }
+    ]
+  },
+  lawps: {
+    name: 'Law, Public Safety, Corrections & Security',
+    shortName: 'Law & Public Safety',
+    icon: '🚒',
+    tagline: 'Protect and serve communities through law enforcement, fire, and forensics.',
+    match_desc: 'You want to protect people, solve crimes, and respond when emergencies happen. Action, accountability, and being on the right side of things are important to you.',
+    careers: 'Firefighter, Police Officer, Forensic Scientist, Corrections Officer, Border Patrol, Private Investigator, Emergency Dispatcher, Fire Marshal.',
+    programs: [
+      { name: 'Fire Science',    schools: ['AACT'] },
+      { name: 'Forensic Science',schools: ['AACT','DRHS','Hug'] },
+      { name: 'Law Enforcement', schools: ['AACT'] }
+    ]
+  },
+  mfg: {
+    name: 'Manufacturing',
+    shortName: 'Manufacturing & Skilled Trades',
+    icon: '⚙️',
+    tagline: 'Build, shape, and produce real products using machines and skilled hands.',
+    match_desc: 'You like precision, machinery, and building things that last. Metalworking, welding, and manufacturing technology are right in your wheelhouse — and the industry needs your skills.',
+    careers: 'Machinist, Welder, CNC Operator, Manufacturing Engineer, Quality Inspector, Tool & Die Maker, Production Supervisor, Metal Fabricator, Robotics Technician.',
+    programs: [
+      { name: 'Advanced Manufacturing Technologies', schools: ['ACE','Sparks'] },
+      { name: 'Metalworking',                        schools: ['DSCTEA','Galena','Reed','Wooster'] },
+      { name: 'Welding Technology',                  schools: ['DSCTEA','Reed'] }
+    ]
+  },
+  stem: {
+    name: 'Science, Technology, Engineering & Mathematics',
+    shortName: 'Engineering & STEM',
+    icon: '🔬',
+    tagline: 'Apply science and math to design, build, and solve hard problems.',
+    match_desc: 'You love understanding how things work at a fundamental level — and then designing better ones. Engineering is the process of turning ideas into reality through math, science, and creative problem-solving.',
+    careers: 'Mechanical Engineer, Civil Engineer, Electrical Engineer, Robotics Engineer, Aerospace Engineer, Biomedical Engineer, Engineering Technician, Product Designer.',
+    programs: [
+      { name: 'Energy Technologies',   schools: ['Wooster'] },
+      { name: 'Engineering Foundations', schools: ['DSCTEA','Galena','Incline','Reno'] }
+    ]
+  },
+  trans: {
+    name: 'Transportation, Distribution & Logistics',
+    shortName: 'Transportation & Automotive',
+    icon: '✈️',
+    tagline: 'Work on vehicles, aircraft, engines, and the systems that move the world.',
+    match_desc: 'Engines, aircraft, heavy equipment — you like how things move and how to keep them moving. Automotive, aviation, and diesel technology are your kind of hands-on challenge.',
+    careers: 'Automotive Technician, Diesel Mechanic, Aircraft Mechanic, Aviation Technician, Fleet Manager, Parts Specialist, Transportation Supervisor.',
+    programs: [
+      { name: 'Automotive Technology', schools: ['SSHS'] },
+      { name: 'Aviation Technology',   schools: ['AACT'] },
+      { name: 'Diesel Technology',     schools: ['ACE','NVHS'] }
+    ]
+  }
+};
+
+const CLUSTER_KEYS = ['agfnr','archi','arts','bizadm','edtrain','govpa','health','hosp','humanserv','infotech','lawps','mfg','stem','trans'];
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SURVEY QUESTIONS  (10 total)
+// Lifestyle-first: environment → output → service → outdoors → style →
+//   saturday → challenge → 10-year picture → team → what matters most
+// Scores are per career cluster key.
+// Empty scores{} = undecided option (valid, scored as abstention).
+// ═══════════════════════════════════════════════════════════════════════════
+const QUESTIONS = [
+  // Q1 — ENVIRONMENT
+  {
+    q: 'Someday, where do you picture yourself working most of the time?',
+    opts: [
+      { label: 'In a kitchen, restaurant, or food business',
+        scores: { hosp:3 } },
+      { label: 'In a shop, factory, or on a job site building real things',
+        scores: { mfg:2, archi:2, trans:1 } },
+      { label: 'Outside — with land, animals, crops, or open space',
+        scores: { agfnr:3 } },
+      { label: 'With people — in a clinic, classroom, or community setting',
+        scores: { health:2, humanserv:2, edtrain:2 } },
+      { label: 'At a computer or creative workstation — designing, coding, or producing',
+        scores: { infotech:2, arts:2, bizadm:1, stem:1 } }
+    ]
+  },
+  // Q2 — WHAT YOU'D MAKE
+  {
+    q: 'If you could spend today making something, what would it be?',
+    opts: [
+      { label: 'A great meal, recipe, or food event that people will enjoy',
+        scores: { hosp:2 } },
+      { label: 'Something physical — a structure, vehicle, or piece of machinery',
+        scores: { mfg:2, archi:2, trans:2 } },
+      { label: 'Something that grows — a garden, crop, or animal project',
+        scores: { agfnr:2 } },
+      { label: 'A design, app, or piece of working technology',
+        scores: { stem:2, infotech:2 } },
+      { label: 'A video, graphic, or piece of content that reaches people',
+        scores: { arts:2, bizadm:1 } }
+    ]
+  },
+  // Q3 — WHO YOU SERVE
+  {
+    q: 'Who do you most want your work to impact?',
+    opts: [
+      { label: 'Guests, customers, or audiences — people enjoying what you created',
+        scores: { hosp:2, bizadm:1, arts:1 } },
+      { label: 'Kids, patients, or people who need care, support, or guidance',
+        scores: { edtrain:2, health:2, humanserv:2 } },
+      { label: 'Communities — protecting, defending, or keeping people safe',
+        scores: { lawps:2, govpa:2 } },
+      { label: 'Industry and the economy — making systems, products, or businesses better',
+        scores: { mfg:2, bizadm:1, stem:1 } },
+      { label: 'Everyone — through technology, creativity, or communication',
+        scores: { infotech:2, arts:1, stem:1 } }
+    ]
+  },
+  // Q4 — OUTDOORS
+  {
+    q: 'How important is working outdoors to you?',
+    opts: [
+      { label: 'Very — I want fresh air and open space as much as possible',
+        scores: { agfnr:3 } },
+      { label: 'Some — a mix of inside and outside sounds right',
+        scores: { archi:1, agfnr:1, trans:1 } },
+      { label: 'Not much — I prefer a kitchen, shop, studio, or office',
+        scores: { hosp:1, mfg:1, infotech:1, arts:1 } },
+      { label: 'Doesn\'t matter — I\'ll go wherever the work or mission takes me',
+        scores: { govpa:2, lawps:1, trans:1 } }
+    ]
+  },
+  // Q5 — WORK STYLE
+  {
+    q: 'Which word fits the way you work best?',
+    opts: [
+      { label: 'Creative — I love experimenting until something looks, tastes, or sounds perfect',
+        scores: { hosp:2, arts:2 } },
+      { label: 'Analytical — I love data, code, and solving problems logically',
+        scores: { infotech:2, stem:2, bizadm:1 } },
+      { label: 'Physical — I love hands-on work with real tools and materials',
+        scores: { mfg:2, archi:2, agfnr:1, trans:1 } },
+      { label: 'Caring — I love supporting others and making a real difference in their lives',
+        scores: { health:2, humanserv:2, edtrain:2 } },
+      { label: 'Bold — I love leadership, action, and high-stakes situations',
+        scores: { govpa:2, lawps:2, trans:1 } }
+    ]
+  },
+  // Q6 — SATURDAY
+  {
+    q: 'Which Saturday sounds most like you?',
+    opts: [
+      { label: 'Cooking or hosting a meal for family or friends',
+        scores: { hosp:2 } },
+      { label: 'Building or fixing something in the shop, garage, or yard',
+        scores: { mfg:2, archi:1, trans:1 } },
+      { label: 'Outside — working with animals, plants, or land',
+        scores: { agfnr:2 } },
+      { label: 'Making something creative — a video, design, or piece of art',
+        scores: { arts:3 } },
+      { label: 'Coding, gaming, or going deep on a tech or business topic',
+        scores: { infotech:2, stem:2, bizadm:1 } }
+    ]
+  },
+  // Q7 — CHALLENGE TYPE
+  {
+    q: 'What kind of challenge sounds most like fun to you?',
+    opts: [
+      { label: 'Getting something to taste, look, or sound exactly right — perfecting through trial and error',
+        scores: { hosp:2, arts:1 } },
+      { label: 'Figuring out why something broke — then fixing it',
+        scores: { mfg:2, trans:2, agfnr:1 } },
+      { label: 'Leading a team through a high-stakes or mission-critical situation',
+        scores: { govpa:2, lawps:2 } },
+      { label: 'Designing a solution from scratch — sketching, engineering, building',
+        scores: { stem:2, archi:2, infotech:1 } },
+      { label: 'Helping someone get through something difficult — medically, emotionally, or in school',
+        scores: { health:2, humanserv:2, edtrain:2 } }
+    ]
+  },
+  // Q8 — 10-YEAR PICTURE
+  {
+    q: 'When you picture your life ten years from now, where are you?',
+    opts: [
+      { label: 'Running my own restaurant, business, or creative studio',
+        scores: { hosp:2, bizadm:2, arts:1 } },
+      { label: 'Working in a hospital, school, clinic, or social service agency',
+        scores: { health:2, humanserv:2, edtrain:2 } },
+      { label: 'Somewhere different every few years — serving a mission, traveling, or protecting communities',
+        scores: { govpa:3, lawps:1, trans:1 } },
+      { label: 'In a shop, at a plant, or on a job site — skilled work I\'m proud of',
+        scores: { mfg:2, archi:2, trans:1 } },
+      { label: 'On a ranch, farm, or outdoors — working with land, animals, or nature',
+        scores: { agfnr:3 } },
+      { label: 'Honestly not sure — I\'m still figuring that out',
+        scores: {} }
+    ]
+  },
+  // Q9 — TEAM
+  {
+    q: 'What kind of people do you most want to work with every day?',
+    opts: [
+      { label: 'A creative team — chefs, artists, performers, or media makers',
+        scores: { hosp:2, arts:2 } },
+      { label: 'Skilled tradespeople who build, weld, or fix real things',
+        scores: { mfg:2, archi:2, agfnr:1 } },
+      { label: 'Care workers — nurses, teachers, counselors, or social workers',
+        scores: { health:2, humanserv:2, edtrain:2 } },
+      { label: 'A large mission-driven team — military, law enforcement, or emergency services',
+        scores: { govpa:3, lawps:2 } },
+      { label: 'Tech and business professionals — developers, engineers, designers, or strategists',
+        scores: { infotech:2, stem:2, bizadm:2 } },
+      { label: 'Honestly, I haven\'t thought much about it yet',
+        scores: {} }
+    ]
+  },
+  // Q10 — WHAT MATTERS MOST
+  {
+    q: 'What matters most to you in a future career?',
+    opts: [
+      { label: 'Creative expression — making things that are beautiful, delicious, or memorable',
+        scores: { arts:2, hosp:1 } },
+      { label: 'Directly helping people — healing, teaching, supporting, or guiding them',
+        scores: { health:2, humanserv:2, edtrain:2 } },
+      { label: 'Skilled, hands-on work — building or fixing things that matter and last',
+        scores: { mfg:2, archi:2, agfnr:1, trans:1 } },
+      { label: 'Service and protection — being part of something bigger than yourself',
+        scores: { govpa:2, lawps:2 } },
+      { label: 'Innovation — designing, building, or inventing new solutions to real problems',
+        scores: { stem:2, infotech:2, bizadm:1 } },
+      { label: 'I don\'t know yet — I\'m keeping all my options open',
+        scores: {} }
+    ]
+  }
+];
+
+const Q_TOTAL = QUESTIONS.length; // 10
+
+// ═══════════════════════════════════════════════════════════════════════════
+// APPLICATION STATE
+// ═══════════════════════════════════════════════════════════════════════════
+let student            = { first:'', last:'', id:'', grade:'', school:'' };
+let selectedMiddleSchool = null;  // key into MIDDLE_SCHOOLS
+let responses          = new Array(Q_TOTAL).fill(null);
+let currentQ           = 0;
+let advancing          = false;
+let scores             = {};
+let completionDate     = '';
+
+// ═══════════════════════════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function setControlsBar(show, studentLabel, progressLabel) {
+  const bar = document.getElementById('controls-bar');
+  if (!show) { bar.classList.remove('visible'); return; }
+  bar.classList.add('visible');
+  document.getElementById('ctrl-student').textContent  = studentLabel  || '';
+  document.getElementById('ctrl-progress').textContent = progressLabel || '';
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SCREEN 1 — WELCOME / INTAKE
+// ═══════════════════════════════════════════════════════════════════════════
+function goToSchoolSelector() {
+  const first   = document.getElementById('inp-first').value.trim();
+  const last    = document.getElementById('inp-last').value.trim();
+  const id      = document.getElementById('inp-id').value.trim();
+  const grade   = document.getElementById('inp-grade').value;
+  const err     = document.getElementById('welcome-err');
+
+  if (!first || !last || !grade) {
+    err.classList.add('show'); return;
+  }
+  err.classList.remove('show');
+  student = { first, last, id, grade, school: '' };
+
+  renderSchoolSelector();
+  setControlsBar(true, `${first} ${last}`, 'Step 1 of 2: Your School');
+  showScreen('screen-school');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SCREEN 2 — MIDDLE SCHOOL SELECTOR
+// ═══════════════════════════════════════════════════════════════════════════
+function renderSchoolSelector() {
+  const grid = document.getElementById('ms-grid');
+  const keys = Object.keys(MIDDLE_SCHOOLS);
+  grid.innerHTML = keys.map(k => {
+    const ms = MIDDLE_SCHOOLS[k];
+    const isOther = k === 'Other';
+    const cls = ['ms-btn', isOther ? 'other-btn' : '', selectedMiddleSchool === k ? 'selected' : '']
+      .filter(Boolean).join(' ');
+    return `<button class="${cls}" onclick="selectMiddleSchool('${k}')">${escHtml(ms.name)}</button>`;
+  }).join('');
+}
+
+function selectMiddleSchool(key) {
+  selectedMiddleSchool = key;
+  student.school = MIDDLE_SCHOOLS[key].name;
+  document.getElementById('school-err').classList.remove('show');
+
+  // auto-advance
+  responses = new Array(Q_TOTAL).fill(null);
+  currentQ  = 0;
+  advancing = false;
+  renderQuestion();
+  setControlsBar(true, `${student.first} ${student.last}`, `Question 1 of ${Q_TOTAL}`);
+  showScreen('screen-survey');
+}
+
+function backToWelcome() {
+  setControlsBar(false);
+  showScreen('screen-welcome');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SCREEN 3 — SURVEY (one-at-a-time, auto-advance)
+// ═══════════════════════════════════════════════════════════════════════════
+function renderQuestion() {
+  const qi  = currentQ;
+  const q   = QUESTIONS[qi];
+  const sel = responses[qi];
+  const pct = Math.round((qi / Q_TOTAL) * 100);
+
+  document.getElementById('survey-q-label').textContent   = `Question ${qi + 1} of ${Q_TOTAL}`;
+  document.getElementById('survey-pct-label').textContent = `${pct}%`;
+  document.getElementById('survey-prog-fill').style.width  = `${pct}%`;
+  const backBtn = document.getElementById('survey-back-btn');
+  backBtn.style.display = 'inline-flex';
+  backBtn.textContent = qi > 0 ? '← Back' : '← Change School';
+
+  const optHtml = q.opts.map((o, i) => {
+    const isUndecided = Object.keys(o.scores).length === 0;
+    const cls = ['option-btn', isUndecided ? 'undecided-opt' : '', sel === i ? 'selected' : '']
+      .filter(Boolean).join(' ');
+    return `<button class="${cls}" onclick="selectOption(${qi},${i},this)">${escHtml(o.label)}</button>`;
+  }).join('');
+
+  document.getElementById('survey-content').innerHTML =
+    `<div class="question-text">${escHtml(q.q)}</div><div class="option-list">${optHtml}</div>`;
+
+  advancing = false;
+  setControlsBar(true, `${student.first} ${student.last}`, `Question ${qi + 1} of ${Q_TOTAL}`);
+}
+
+function selectOption(qi, optIdx, el) {
+  if (advancing) return;
+  responses[qi] = optIdx;
+  el.closest('.option-list').querySelectorAll('.option-btn').forEach(b => {
+    b.classList.remove('selected');
+    b.disabled = true;
+  });
+  el.classList.add('selected');
+  advancing = true;
+
+  setTimeout(() => {
+    if (qi + 1 < Q_TOTAL) {
+      currentQ = qi + 1;
+      renderQuestion();
+    } else {
+      completionDate = new Date().toLocaleDateString('en-US',
+        { year:'numeric', month:'2-digit', day:'2-digit' });
+      computeScores();
+      renderResults();
+      setControlsBar(true, `${student.first} ${student.last}`, 'Your Results');
+      showScreen('screen-results');
+    }
+  }, 350);
+}
+
+function surveyBack() {
+  if (currentQ > 0) {
+    currentQ--;
+    renderQuestion();
+  } else {
+    renderSchoolSelector();
+    setControlsBar(true, `${student.first} ${student.last}`, 'Step 1 of 2: Your School');
+    showScreen('screen-school');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SCORING
+// ═══════════════════════════════════════════════════════════════════════════
+function computeScores() {
+  scores = {};
+  CLUSTER_KEYS.forEach(k => scores[k] = 0);
+  QUESTIONS.forEach((q, i) => {
+    const sel = responses[i];
+    if (sel === null) return;
+    const s = q.opts[sel].scores;
+    Object.entries(s).forEach(([ck, pts]) => {
+      if (ck in scores) scores[ck] += pts;
+    });
+  });
+}
+
+function rankedClusters() {
+  return CLUSTER_KEYS
+    .map(k => ({ key: k, score: scores[k] || 0 }))
+    .sort((a, b) => b.score - a.score || a.key.localeCompare(b.key));
+}
+
+function isBroadExplorer() {
+  const ranked = rankedClusters();
+  const top    = ranked[0].score;
+  const third  = ranked[2] ? ranked[2].score : 0;
+  return top < 6 || (top - third) <= 3;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SCREEN 4 — RESULTS
+// ═══════════════════════════════════════════════════════════════════════════
+function renderResults() {
+  const ranked   = rankedClusters();
+  const topScore = ranked[0].score;
+  const explorer = isBroadExplorer();
+
+  // Which clusters to highlight
+  const topN = explorer ? CLUSTER_KEYS.slice() : ranked.slice(0,3).map(r => r.key);
+
+  // Zoned high school(s)
+  const ms = selectedMiddleSchool ? MIDDLE_SCHOOLS[selectedMiddleSchool] : null;
+  const zonedHSIds = ms ? ms.zoned : [];
+  const splitNote  = ms ? ms.splitNote : null;
+
+  // All HS IDs (for School of Choice section)
+  const ALL_HS = ['DRHS','Galena','Hug','Incline','McQueen','NVHS','Reed','Reno','Sparks','SSHS','Wooster'];
+  const applySchools   = ['AACT','DSCTEA'];
+  const charterSchools = ['Coral','ACE'];
+
+  // Match note — defined here so it's in scope for all four tiers
+  const matchNoteText = explorer
+    ? 'All WCSD CTE programs are shown below since your interests span many areas.'
+    : 'Programs shown match the interest areas you scored highest on.';
+
+  let html = '';
+
+  // ── BANNER ─────────────────────────────────────────────────────────────
+  if (explorer) {
+    html += `<div class="explorer-banner">
+      <strong>✦ ${escHtml(student.first)}, your interests span a lot of areas — and that's a great place to start.</strong>
+      You didn't land strongly in one direction, which often means you're genuinely curious about many things.
+      That's totally normal, especially in middle school. Below you'll see <em>all</em> WCSD CTE programs
+      available to you, organized by how you can access them. Explore and find what sounds most interesting.
+    </div>`;
+  } else {
+    const topNames = ranked.slice(0,3).map((r,i) => {
+      const rank = i===0?'rank1':i===1?'rank2':'rank3';
+      return `<button class="cluster-chip ${rank}" onclick="showDetail('${r.key}')">${escHtml(CLUSTERS[r.key].icon)} ${escHtml(CLUSTERS[r.key].shortName)}</button>`;
+    }).join('');
+    html += `<div class="results-banner">
+      <strong>${escHtml(student.first)}, here are your top CTE interest areas.</strong>
+      These reflect how you said you like to work and what excites you. This is a starting point —
+      not a commitment. Tap any area to learn more. Talk to your counselor to plan your path.
+    </div>
+    <div class="cluster-chips">${topNames}</div>`;
+  }
+
+  // ── TIER 1: AT YOUR ZONED SCHOOL ───────────────────────────────────────
+  if (zonedHSIds.length > 0) {
+    html += `<div class="results-tier tier-zoned">
+      <div class="results-tier-header">
+        <span class="tier-icon">🏫</span>
+        <span>At Your Zoned High School</span>
+        <span class="tier-badge">No Transfer Needed</span>
+      </div>
+      <div class="results-tier-body">`;
+
+    html += `<div class="match-note">✦ ${matchNoteText}</div>`;
+
+    if (splitNote) {
+      html += `<div class="small-note" style="margin-bottom:10px;text-align:left;">⚠️ ${escHtml(splitNote)}</div>`;
+    }
+
+    zonedHSIds.forEach(hsId => {
+      const hsLabel = SCHOOL_LABELS[hsId];
+      html += `<div class="school-block">
+        <div class="school-block-name">
+          ${schoolNameHtml(hsLabel)}
+          <span class="school-type-badge badge-hs">HS</span>
+        </div>`;
+
+      // Programs in top clusters at this school
+      const matchingProgs = getProgsAtSchoolInClusters(hsId, topN);
+
+      // Military Science special handling
+      const milsciMatch = topN.includes('govpa') && CLUSTERS.govpa.programs[0].schools.includes(hsId);
+      const nonMilProgs = matchingProgs.filter(p => p.clusterKey !== 'govpa');
+
+      if (nonMilProgs.length === 0 && !milsciMatch) {
+        // Check if school has ANY programs at all
+        const anyProgs = getProgsAtSchoolInClusters(hsId, CLUSTER_KEYS);
+        if (anyProgs.length > 0) {
+          html += `<div class="no-match-note">Your top areas aren't currently offered here, but this school does offer: ${sortProgs(anyProgs).map(p=>escHtml(p.name)).join(', ')}.</div>`;
+        } else {
+          html += `<div class="no-match-note">None of your top areas are currently offered here. See district-wide and charter options below.</div>`;
+        }
+      } else {
+        sortProgs(nonMilProgs).forEach(p => {
+          html += renderProgRow(p);
+        });
+      }
+
+      // Military Science always shown if at this school (regardless of ranking)
+      if (CLUSTERS.govpa.programs[0].schools.includes(hsId)) {
+        const branch = jrotcBranch(hsId);
+        html += `<div class="milsci-row">🎖️ Military Science (JROTC) — ${escHtml(branch)}<span class="milsci-branch">Available here · Doesn't obligate military service</span></div>`;
+      }
+
+      html += `</div>`; // .school-block
+    });
+
+    // If student has other possible HS (split zone)
+    const alsoHSIds = ms && ms.also ? ms.also : [];
+    if (alsoHSIds.length > 0) {
+      html += `<div style="font-size:13px;color:#888;margin-top:6px;padding:6px 0;border-top:1px solid #eee;">
+        Depending on your address, you may also be zoned for:
+        ${alsoHSIds.map(id => `<strong>${escHtml(SCHOOL_LABELS[id].name)}</strong>`).join(' or ')}.
+        Ask your counselor to confirm your exact zone.
+      </div>`;
+    }
+
+    html += `</div></div>`; // tier-body, tier-zoned
+  } else {
+    html += `<div class="results-tier tier-zoned">
+      <div class="results-tier-header"><span class="tier-icon">🏫</span><span>At Your Zoned High School</span></div>
+      <div class="results-tier-body">
+        <div class="no-match-note">Ask your counselor which high school you're zoned for to see programs available at your campus.</div>
+      </div></div>`;
+  }
+
+  // ── TIER 2: DISTRICT-WIDE APPLICATION ──────────────────────────────────
+  html += `<div class="results-tier tier-apply">
+    <div class="results-tier-header">
+      <span class="tier-icon">🏛️</span>
+      <span>Apply District-Wide</span>
+      <span class="tier-badge">Application Based</span>
+    </div>
+    <div class="results-tier-body">
+    <div style="font-size:13px;color:#5a3500;margin-bottom:6px;line-height:1.5;">
+      Any WCSD 8th grader can apply to these full-time career academies. Applications open each fall for the following school year. Ask your counselor for deadlines.
+      <strong>Students may apply to both AACT and DSCTEA at the same time.</strong>
+    </div>
+    <div class="match-note">✦ ${matchNoteText}</div>`;
+
+  let applyHasContent = false;
+  applySchools.forEach(schoolId => {
+    const progs = getProgsAtSchoolInClusters(schoolId, topN);
+    if (progs.length === 0) return;
+    applyHasContent = true;
+    const sl = SCHOOL_LABELS[schoolId];
+    html += `<div class="school-block">
+      <div class="school-block-name">${schoolNameHtml(sl)}<span class="school-type-badge badge-apply">Apply</span></div>`;
+    sortProgs(progs).forEach(p => { html += renderProgRow(p); });
+    html += `</div>`;
+  });
+
+  if (!applyHasContent) {
+    html += `<div class="no-match-note">District-wide application schools don't currently have programs matching your top areas — but they offer many other pathways worth exploring.</div>`;
+  }
+
+  html += `</div></div>`; // tier-body, tier-apply
+
+  // ── TIER 3: CHARTER / LOTTERY ──────────────────────────────────────────
+  html += `<div class="results-tier tier-charter">
+    <div class="results-tier-header">
+      <span class="tier-icon">🎓</span>
+      <span>Charter Schools</span>
+      <span class="tier-badge">Application Based</span>
+    </div>
+    <div class="results-tier-body">
+    <div style="font-size:13px;color:#1a5e45;margin-bottom:6px;line-height:1.5;">
+      Publicly funded charter schools open to all WCSD students via lottery. Each school manages its own application and lottery process.
+    </div>
+    <div class="match-note">✦ ${matchNoteText}</div>`;
+
+  let charterHasContent = false;
+  charterSchools.forEach(schoolId => {
+    const progs = getProgsAtSchoolInClusters(schoolId, topN);
+    if (progs.length === 0) return;
+    charterHasContent = true;
+    const sl = SCHOOL_LABELS[schoolId];
+    html += `<div class="school-block">
+      <div class="school-block-name">${schoolNameHtml(sl)}<span class="school-type-badge badge-charter">Apply</span></div>`;
+    sortProgs(progs).forEach(p => { html += renderProgRow(p); });
+    html += `</div>`;
+  });
+
+  if (!charterHasContent) {
+    html += `<div class="no-match-note">Charter schools don't currently have programs matching your top areas. Coral Academy focuses on STEM and IT; ACE focuses on skilled trades and construction.</div>`;
+  }
+
+  html += `</div></div>`; // tier-body, tier-charter
+
+  // ── TIER 4: SCHOOL OF CHOICE ───────────────────────────────────────────
+  // Find programs in top clusters at OTHER comprehensive HS (not zoned, not apply, not charter)
+  const otherHSIds = ALL_HS.filter(id => !zonedHSIds.includes(id));
+  const socProgs = [];
+  otherHSIds.forEach(hsId => {
+    getProgsAtSchoolInClusters(hsId, topN)
+      .filter(p => p.clusterKey !== 'govpa') // milsci at every HS isn't useful here
+      .forEach(p => {
+        if (!socProgs.find(x => x.name === p.name && x.schoolId === hsId)) {
+          socProgs.push({ ...p, schoolId: hsId, schoolName: SCHOOL_LABELS[hsId].name });
+        }
+      });
+  });
+
+  if (socProgs.length > 0) {
+    html += `<div class="results-tier tier-soc">
+      <div class="results-tier-header">
+        <span class="tier-icon">🔄</span>
+        <span>Other WCSD Schools — School of Choice</span>
+        <span class="tier-badge">Transfer Process</span>
+      </div>
+      <div class="results-tier-body">
+      <div class="soc-note">
+        WCSD's <a class="soc-link" href="https://www.washoeschools.net/directory/student-enrollment-and-records/school-of-choice/school-of-choice-faqs" target="_blank">School of Choice</a>
+        program may allow you to attend a different comprehensive high school to access a program not offered at your zoned campus.
+        This process has deadlines and availability limits — talk to your counselor.
+      </div>
+      <div class="match-note" style="margin-top:8px;">✦ ${matchNoteText}</div>
+      <div style="margin-top:10px;">`;
+
+    // Group by school
+    const bySchool = {};
+    socProgs.forEach(p => {
+      if (!bySchool[p.schoolId]) bySchool[p.schoolId] = [];
+      bySchool[p.schoolId].push(p);
+    });
+
+    Object.entries(bySchool).forEach(([hsId, progs]) => {
+      html += `<div class="school-block">
+        <div class="school-block-name">${schoolNameHtml(SCHOOL_LABELS[hsId])}<span class="school-type-badge badge-soc">SoC</span></div>`;
+      sortProgs(progs).forEach(p => { html += renderProgRow(p); });
+      html += `</div>`;
+    });
+
+    html += `</div></div></div>`; // inner div, tier-body, tier-soc
+  }
+
+  // ── ALL CLUSTER SCORES TOGGLE ───────────────────────────────────────────
+  const withPct = rankedClusters().map(item => ({
+    ...item,
+    pct: topScore > 0 ? Math.round((item.score / topScore) * 100) : 0
+  }));
+
+  html += `<button class="all-scores-toggle" onclick="toggleAllScores(this)">▸ See all 14 interest area scores</button>
+  <div class="all-scores-panel" id="all-scores-panel">`;
+  withPct.forEach((item, idx) => {
+    html += `<div class="all-score-row">
+      <div class="all-score-name">${escHtml(CLUSTERS[item.key].icon)} ${escHtml(CLUSTERS[item.key].shortName)}</div>
+      <div class="all-score-bar-track">
+        <div class="all-score-bar-fill${idx < 3 ? ' hi' : ''}" data-pct="${item.pct}"></div>
+      </div>
+      <div class="all-score-pct">${item.pct}%</div>
+    </div>`;
+  });
+  html += `</div>`;
+
+  // ── EXPORT ──────────────────────────────────────────────────────────────
+  html += `<div class="export-box">
+    <div class="export-box-title">Share Your Results</div>
+    <div class="export-box-desc">
+      Download a CSV to submit through Canvas or share with your counselor.
+      Print or save as PDF to share with a parent or guardian.
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="downloadCSV()">⬇ Download Results (.csv)</button>
+      <button class="btn btn-outline no-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+      <button class="btn btn-outline no-print" onclick="confirmRetake()">↺ Start Over</button>
+    </div>
+  </div>`;
+
+  // ── COUNSELOR SUMMARY ───────────────────────────────────────────────────
+  const zonedNames = zonedHSIds.map(id => SCHOOL_LABELS[id].name).join(' / ') || 'Unknown';
+  const topClusterNames = explorer
+    ? 'Broad Explorer (no strong preference)'
+    : ranked.slice(0,3).map(r => CLUSTERS[r.key].shortName).join(', ');
+
+  html += `<div class="counselor-box">
+    <div class="counselor-box-title">📋 For Your Counselor</div>
+    <strong>${escHtml(student.first)} ${escHtml(student.last)}</strong> &nbsp;·&nbsp;
+    ID: ${escHtml(student.id)} &nbsp;·&nbsp; Grade ${escHtml(student.grade)}<br>
+    Middle School: ${escHtml(student.school)}<br>
+    Zoned High School: ${escHtml(zonedNames)}<br>
+    Top Interest Areas: ${escHtml(topClusterNames)}<br>
+    Result Type: ${explorer ? 'Broad Explorer' : 'Matched'} &nbsp;·&nbsp; Completed: ${escHtml(completionDate)}
+  </div>
+  <div class="results-footer">
+    Washoe County School District — Career &amp; Technical Education &nbsp;·&nbsp;
+    washoeschools.net/cte &nbsp;·&nbsp;
+    Talk to your school counselor about next steps and enrollment options.
+  </div>`;
+
+  document.getElementById('results-content').innerHTML = html;
+
+  // Animate bars
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    document.querySelectorAll('[data-pct]').forEach(el => {
+      el.style.width = el.dataset.pct + '%';
+    });
+  }));
+}
+
+// Render a program row in results
+function renderProgRow(p) {
+  const noteHtml = p.note ? `<span class="prog-note">${escHtml(p.note)}</span>` : '';
+  return `<div class="prog-row">
+    <div class="prog-name">${escHtml(p.name)}${noteHtml}</div>
+  </div>`;
+}
+
+function sortProgs(progs) {
+  return progs.slice().sort((a, b) => a.name.localeCompare(b.name));
+}
+
+function schoolNameHtml(sl) {
+  if (sl.url) {
+    return `<a href="${escHtml(sl.url)}" target="_blank" rel="noopener">${escHtml(sl.name)}</a>`;
+  }
+  return escHtml(sl.name);
+}
+
+// Get programs at a school matching any of the given cluster keys
+function getProgsAtSchoolInClusters(schoolId, clusterKeys) {
+  const result = [];
+  clusterKeys.forEach(ck => {
+    if (!CLUSTERS[ck]) return;
+    CLUSTERS[ck].programs.forEach(p => {
+      if (p.schools.includes(schoolId)) {
+        result.push({ ...p, clusterKey: ck });
+      }
+    });
+  });
+  return result;
+}
+
+function toggleAllScores(btn) {
+  const panel = document.getElementById('all-scores-panel');
+  panel.classList.toggle('open');
+  if (panel.classList.contains('open')) {
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      panel.querySelectorAll('[data-pct]').forEach(el => { el.style.width = el.dataset.pct + '%'; });
+    }));
+  }
+  btn.textContent = panel.classList.contains('open')
+    ? '▾ Hide all interest area scores'
+    : '▸ See all 14 interest area scores';
+}
+
+function confirmRetake() {
+  if (!confirm('Start over? Your current answers will be cleared.')) return;
+  responses = new Array(Q_TOTAL).fill(null);
+  scores    = {};
+  currentQ  = 0;
+  selectedMiddleSchool = null;
+  setControlsBar(false);
+  showScreen('screen-welcome');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SCREEN 5 — CLUSTER DETAIL
+// ═══════════════════════════════════════════════════════════════════════════
+function showDetail(clusterKey) {
+  const cl = CLUSTERS[clusterKey];
+  if (!cl) return;
+
+  const ranked   = rankedClusters();
+  const topScore = ranked[0].score;
+  const myScore  = scores[clusterKey] || 0;
+  const pct      = topScore > 0 ? Math.round((myScore / topScore) * 100) : 0;
+
+  // Which schools are the student's own
+  const zonedHSIds = selectedMiddleSchool ? MIDDLE_SCHOOLS[selectedMiddleSchool].zoned : [];
+
+  const progsHtml = cl.programs.map(p => {
+    const pills = p.schools.map(sid => {
+      const sl = SCHOOL_LABELS[sid];
+      if (!sl) return '';
+      const isMine = zonedHSIds.includes(sid);
+      const pillClass = isMine ? 'school-pill my-school' : `school-pill ${sl.type}`;
+      const badge = sl.type === 'apply' ? 'Apply' : sl.type === 'charter' ? 'Lottery' : isMine ? 'Your School' : 'HS';
+      return `<span class="${pillClass}" title="${escHtml(sl.name)}">${escHtml(sl.name)}<span class="pill-type">${badge}</span></span>`;
+    }).join('');
+    const noteHtml = p.note ? `<div style="font-size:12px;color:#888;margin-top:4px;font-style:italic;">${escHtml(p.note)}</div>` : '';
+    return `<div class="detail-prog-item">
+      <div class="detail-prog-name">${escHtml(p.name)}</div>
+      <div class="detail-school-pills">${pills}</div>
+      ${noteHtml}
+    </div>`;
+  }).join('');
+
+  const html = `
+    <div class="detail-header">
+      <span class="detail-icon">${cl.icon}</span>
+      <div class="detail-cluster-name">${escHtml(cl.name)}</div>
+      <div class="detail-tagline">${escHtml(cl.tagline)}</div>
+    </div>
+    <div class="detail-section">
+      <h3>Why This Matched You</h3>
+      <p>${escHtml(cl.match_desc)}</p>
+    </div>
+    <div class="divider"></div>
+    <div class="detail-section">
+      <h3>Where It Can Lead</h3>
+      <p>${escHtml(cl.careers)}</p>
+    </div>
+    <div class="divider"></div>
+    <div class="detail-section">
+      <h3>WCSD Programs in This Area</h3>
+      <div class="detail-prog-list">${progsHtml}</div>
+      <div style="font-size:12px;color:#888;margin-top:8px;line-height:1.5;">
+        <strong>Your school</strong> (dark blue) = no transfer needed.
+        <strong>Apply</strong> = district-wide application required.
+        <strong>Lottery</strong> = charter school lottery required.
+        Other HS pills may be accessible via School of Choice — ask your counselor.
+      </div>
+    </div>
+  `;
+
+  document.getElementById('detail-content').innerHTML = html;
+  setControlsBar(true, `${student.first} ${student.last}`, escHtml(cl.shortName));
+  showScreen('screen-detail');
+}
+
+function backToResults() {
+  setControlsBar(true, `${student.first} ${student.last}`, 'Your Results');
+  showScreen('screen-results');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// CSV EXPORT
+// ═══════════════════════════════════════════════════════════════════════════
+function csvCell(val) {
+  const s = String(val == null ? '' : val);
+  return (s.includes(',') || s.includes('"') || s.includes('\n') || s.includes('\r'))
+    ? '"' + s.replace(/"/g, '""') + '"' : s;
+}
+
+function downloadCSV() {
+  const ranked   = rankedClusters();
+  const explorer = isBroadExplorer();
+  const ms       = selectedMiddleSchool ? MIDDLE_SCHOOLS[selectedMiddleSchool] : null;
+  const zonedHS  = ms ? ms.zoned.map(id => SCHOOL_LABELS[id].name).join(' / ') : '';
+
+  const headers = [
+    'CompletionDate','StudentID','FirstName','LastName','Grade','MiddleSchool','ZonedHighSchool',
+    'ResultType',
+    'Top1_Cluster','Top2_Cluster','Top3_Cluster',
+    ...CLUSTER_KEYS.map(k => `Score_${k}`),
+    ...QUESTIONS.map((_,i) => `Q${String(i+1).padStart(2,'0')}_Response`),
+    ...QUESTIONS.map((_,i) => `Q${String(i+1).padStart(2,'0')}_Text`)
+  ];
+
+  const row = [
+    completionDate,
+    student.id, student.first, student.last, student.grade, student.school, zonedHS,
+    explorer ? 'BroadExplorer' : 'Matched',
+    CLUSTERS[ranked[0].key].shortName,
+    CLUSTERS[ranked[1].key].shortName,
+    CLUSTERS[ranked[2].key].shortName,
+    ...CLUSTER_KEYS.map(k => scores[k] || 0),
+    ...responses.map(r => r === null ? '' : String.fromCharCode(65 + r)),
+    ...responses.map((r, i) => r === null ? '' : QUESTIONS[i].opts[r].label)
+  ];
+
+  const csv  = [headers, row].map(r => r.map(csvCell).join(',')).join('\r\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url;
+  a.download = `CTE_Survey_${student.last}_${student.first}_${student.id}.csv`;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════════════════════════════════════
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// DEV UTILITIES  —  paste in browser console to bypass intake
+// ═══════════════════════════════════════════════════════════════════════════
+// devPreview()              → broad explorer
+// devPreview('health')      → Health Science dominant
+// devPreview('arts')        → Arts + IT match
+// devPreview('trades')      → Manufacturing + Construction
+// devPreview('outdoor')     → Agriculture dominant
+// devPreview('milsci')      → Government/Military dominant
+// devPreview('mendive')     → Reed HS zone, health focus
+window.devPreview = function(scenario, msKey) {
+  student = { first:'Alex', last:'Rivera', id:'999001',
+              grade:'8', school:'Swope Middle School' };
+  selectedMiddleSchool = msKey || 'Swope'; // Reno zone by default
+
+  // Q indices: Q1 env, Q2 make, Q3 serve, Q4 outdoor, Q5 style, Q6 sat, Q7 challenge, Q8 10yr, Q9 team, Q10 matters
+  const presets = {
+    health:  [3, 4, 1, 2, 3, 0, 4, 1, 2, 1],  // clinic/people/care → health
+    arts:    [4, 3, 4, 2, 0, 3, 0, 0, 0, 0],  // screen/content/creative → arts+IT
+    trades:  [1, 1, 3, 1, 2, 1, 1, 3, 1, 2],  // shop/structure/physical → mfg+archi
+    outdoor: [2, 2, 3, 0, 2, 2, 1, 4, 1, 2],  // land/grow/outdoors → agfnr
+    milsci:  [1, 1, 2, 3, 4, 1, 2, 2, 3, 3],  // mission/bold/military → govpa
+    default: [0, 1, 2, 1, 3, 0, 1, 5, 4, 5]   // scattered → broad explorer
+  };
+
+  const bias = presets[scenario] || presets.default;
+  responses = bias.map((b, i) => Math.min(b, QUESTIONS[i].opts.length - 1));
+  completionDate = new Date().toLocaleDateString('en-US', { year:'numeric', month:'2-digit', day:'2-digit' });
+  computeScores();
+  renderResults();
+  setControlsBar(true, `${student.first} ${student.last}`, 'Your Results');
+  showScreen('screen-results');
+  console.log('devPreview("' + (scenario||'default') + '") — scores:', JSON.stringify(scores));
+};
+
+</script>
+</body>
+</html>
