@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WCSD Work-Based Learning Safety Training</title>
+<style>
+  :root {
+    --navy: #14304f;
+    --navy-dark: #0d2038;
+    --blue: #2563a8;
+    --light-blue: #eaf2fb;
+    --gold: #c8963e;
+    --gold-light: #fbf1de;
+    --green: #1f7a4d;
+    --green-light: #eaf7f0;
+    --brown: #7a5230;
+    --brown-light: #f3e9dd;
+    --red: #b3261e;
+    --gray: #5b6470;
+    --border: #d7dde5;
+    --bg: #f2f4f7;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Calibri, "Segoe UI", Arial, sans-serif;
+    background: var(--bg);
+    color: #202730;
+    line-height: 1.5;
+    font-size: 15.5px;
+  }
+  header.app-header {
+    background: var(--navy);
+    color: #fff;
+    padding: 14px 24px;
+  }
+  header.app-header .brand {
+    font-size: 12px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: #9fb8d4;
+  }
+  header.app-header h1 {
+    margin: 2px 0 0;
+    font-size: 20px;
+    font-weight: 700;
+  }
+  .container { max-width: 800px; margin: 0 auto; padding: 20px 18px 60px; }
+
+  .banner {
+    background: var(--navy);
+    color: #fff;
+    text-align: center;
+    font-weight: 700;
+    font-size: 20px;
+    padding: 14px 16px;
+    border-radius: 8px 8px 0 0;
+    margin: 0;
+  }
+  .card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 2px rgba(0,0,0,.04);
+    overflow: hidden;
+  }
+  .card-body { padding: 20px 24px; }
+
+  .stepper { display: flex; gap: 5px; margin: 14px 0 0; }
+  .step {
+    flex: 1;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 3px;
+    border-radius: 5px;
+    background: #e4e9ef;
+    color: var(--gray);
+    line-height: 1.3;
+  }
+  .step.mastered { background: var(--green); color: #fff; }
+  .step.current { background: var(--blue); color: #fff; }
+  .step.locked { background: #e4e9ef; color: #b3bac4; }
+
+  .attribution { font-size: 12.5px; color: var(--gray); font-style: italic; margin: 0 0 12px; }
+  h2.section-title { color: var(--navy); font-size: 21px; margin: 0 0 4px; }
+  .content-body p { margin: 0 0 11px; }
+  .content-body p:last-of-type { margin-bottom: 0; }
+  .content-body h3 { color: var(--blue); font-size: 15.5px; margin: 18px 0 7px; }
+  .content-body h3:first-child { margin-top: 0; }
+  .content-body ul { margin: 0 0 12px; padding-left: 20px; }
+  .content-body ul:last-child { margin-bottom: 0; }
+  .content-body li { margin-bottom: 5px; }
+  .content-body strong { color: var(--navy); }
+
+  .callout {
+    border-left: 5px solid var(--blue);
+    background: var(--light-blue);
+    border-radius: 5px;
+    padding: 12px 15px;
+    font-size: 14px;
+    margin-top: 14px;
+  }
+  .callout .co-label { font-weight: 800; letter-spacing: .03em; display: block; margin-bottom: 4px; }
+  .callout.gold { border-left-color: var(--gold); background: var(--gold-light); }
+  .callout.gold .co-label { color: #8a5a12; }
+  .callout.blue .co-label { color: var(--blue); }
+  .callout.green { border-left-color: var(--green); background: var(--green-light); }
+  .callout.green .co-label { color: var(--green); }
+  .callout.brown { border-left-color: var(--brown); background: var(--brown-light); }
+  .callout.brown .co-label { color: var(--brown); }
+
+  .stat-box {
+    border: 3px solid var(--navy);
+    background: var(--gold-light);
+    border-radius: 7px;
+    padding: 14px 16px;
+    margin-top: 14px;
+    text-align: center;
+  }
+  .stat-box .stat-label { font-size: 12px; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: .04em; }
+  .stat-box .stat-num { font-size: 26px; font-weight: 800; color: var(--navy); margin: 2px 0 8px; }
+  .stat-box .stat-num:last-of-type { margin-bottom: 0; }
+  .stat-caption { font-size: 12px; color: var(--gray); margin-top: 6px; }
+
+  label { font-weight: 700; font-size: 13.5px; display: block; margin-bottom: 5px; color: var(--navy); }
+  input[type=text] {
+    width: 100%;
+    padding: 9px 11px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 15px;
+    font-family: inherit;
+    margin-bottom: 12px;
+  }
+
+  button {
+    font-family: inherit;
+    font-size: 14.5px;
+    font-weight: 700;
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+  }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+  button:not(:disabled):hover { opacity: .88; }
+  .btn-primary { background: var(--blue); color: #fff; }
+  .btn-secondary { background: #fff; color: var(--blue); border: 1px solid var(--blue); }
+  .btn-gold { background: var(--gold); color: #fff; }
+  .btn-row { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+
+  .topic-list { display: flex; flex-direction: column; gap: 10px; }
+  .topic-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 13px 16px;
+    gap: 10px;
+  }
+  .topic-item.locked { opacity: .55; }
+  .topic-item .t-num {
+    background: var(--navy); color: #fff; font-weight: 800; font-size: 13px;
+    width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .topic-item .t-name { font-weight: 700; color: var(--navy); font-size: 15px; }
+  .topic-item .t-status { font-size: 12px; color: var(--gray); margin-top: 1px; }
+  .badge {
+    display: inline-block;
+    font-size: 10.5px;
+    font-weight: 800;
+    padding: 3px 9px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: .03em;
+    white-space: nowrap;
+  }
+  .badge.done { background: #e2f4ea; color: var(--green); }
+  .badge.todo { background: #eef1f5; color: var(--gray); }
+  .badge.locked { background: #eef1f5; color: #b3bac4; }
+
+  .quiz-q { border-top: 1px solid var(--border); padding: 14px 0; }
+  .quiz-q:first-child { border-top: none; padding-top: 2px; }
+  .quiz-q .q-text { font-weight: 700; margin-bottom: 8px; font-size: 14.5px; }
+  .opt-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    padding: 8px 11px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .opt-label:hover { background: #f8fafc; }
+  .opt-label input { margin-top: 3px; }
+  .opt-label.correct { border-color: var(--green); background: #eefaf2; }
+  .opt-label.incorrect { border-color: var(--red); background: #fdecea; }
+
+  .score-box { text-align: center; padding: 18px; border-radius: 8px; background: var(--light-blue); margin-bottom: 16px; }
+  .score-box.pass { background: var(--green-light); }
+  .score-box .score-num { font-size: 36px; font-weight: 800; color: var(--navy); }
+  .score-box .score-label { font-size: 13px; color: var(--gray); margin-top: 2px; }
+  .pass-pill { display: inline-block; margin-top: 8px; padding: 4px 13px; border-radius: 20px; font-size: 12.5px; font-weight: 800; }
+  .pass-pill.pass { background: var(--green); color: #fff; }
+  .pass-pill.review { background: var(--gold); color: #fff; }
+
+  .error-msg { color: var(--red); font-size: 12.5px; margin-top: -8px; margin-bottom: 12px; display: none; }
+  .footer-note { text-align: center; font-size: 12px; color: var(--gray); margin-top: 22px; }
+
+  .cert-header { text-align: center; padding: 10px 0 4px; }
+  .cert-header .cert-org { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--gray); }
+  .cert-header h2 { color: var(--navy); font-size: 24px; margin: 4px 0 0; }
+  .cert-name { text-align: center; font-size: 22px; font-weight: 800; color: var(--navy); margin: 14px 0 2px; }
+  .cert-date { text-align: center; font-size: 13px; color: var(--gray); margin-bottom: 16px; }
+  .cert-topics { list-style: none; padding: 0; margin: 0 0 6px; }
+  .cert-topics li {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 9px 4px; border-bottom: 1px solid var(--border); font-size: 14.5px; font-weight: 600; color: #222;
+  }
+  .cert-topics li:last-child { border-bottom: none; }
+  .cert-check { color: var(--green); font-weight: 800; }
+
+  .no-print {}
+  @media print {
+    .no-print { display: none !important; }
+    header.app-header { display: none !important; }
+    body { background: #fff; }
+    .container { max-width: 100%; padding: 0; }
+    .card { border: none; box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="app-header no-print">
+  <div class="brand">Washoe County School District</div>
+  <h1>WCSD Work-Based Learning Safety Training</h1>
+</header>
+
+<div class="container" id="appRoot"></div>
+
+<script>
+/* =========================================================================
+   TOPIC SECTIONS
+   To add a future topic: push another object onto this array with the
+   same shape (id, name, subtitle, attribution, contentHtml, calloutHtml,
+   questions). Nothing else in the app needs to change.
+   ========================================================================= */
+const SECTIONS = [
+  {
+    id: "rights",
+    name: "Your Worker Rights",
+    subtitle: "The five basic rights every young worker has on the job",
+    attribution: "Adapted from materials published by the U.S. Equal Employment Opportunity Commission (EEOC)",
+    contentHtml: `
+      <p>The laws enforced by the U.S. Equal Employment Opportunity Commission (EEOC) give you five basic rights at work. These rights apply whether you're full-time, part-time, seasonal, or temporary, and regardless of your citizenship or work authorization status. Nearly every employer with at least 15 employees, along with most unions and employment agencies, is covered.</p>
+      <h3>1. Work Free of Discrimination</h3>
+      <p>Your employer cannot make job decisions &mdash; including hiring, firing, promotions, training, wages, or benefits &mdash; because of your race, color, religion, sex (including pregnancy, sexual orientation, and transgender status), national origin, disability, genetic information, or age (if you're 40 or older).</p>
+      <h3>2. Work Free of Harassment</h3>
+      <p>You have the right to work in an environment free of harassment based on those same characteristics &mdash; race, color, religion, sex, national origin, disability, age 40+, or genetic information.</p>
+      <h3>3. Complain Without Punishment</h3>
+      <p>You have the right to report discrimination you believe is illegal without your employer retaliating against you. Your employer cannot punish you, treat you differently, or harass you for reporting discrimination or helping someone else report it &mdash; even if the complaint turns out not to involve illegal conduct. This is your right to be protected from retaliation.</p>
+      <h3>4. Request Reasonable Workplace Changes</h3>
+      <p>You can request reasonable changes to your workplace because of your religious beliefs, a medical condition, or pregnancy, childbirth, or related medical conditions. Your employer doesn't have to grant every request, but should carefully consider each one and whether it would be possible.</p>
+      <h3>5. Keep Your Medical Information Private</h3>
+      <p>The law strictly limits what an employer can ask you about your health. You have the right to keep any genetic or medical information you share with your employer private. In general, your employer should not discuss it with others &mdash; there are only very limited exceptions.</p>
+    `,
+    calloutHtml: `
+      <div class="callout blue">
+        <span class="co-label">REMEMBER</span>
+        You may have additional rights under other federal, state, or local laws, or your employer's own policies &mdash; for example, minimum wage and workplace safety protections. State and local laws may offer broader protection than federal law, especially at smaller employers. If you have questions, ask your employer for a copy of their policies or call the EEOC at 1-800-669-4000.
+      </div>
+    `,
+    questions: [
+      { q: "Which of the following employees are protected by the laws EEOC enforces?", options: ["Only full-time citizens", "Full-time, part-time, seasonal, and temporary employees", "Only employees over 18", "Only employees with written contracts"], correct: 1 },
+      { q: "Generally, how many employees must a company have to be covered by the laws EEOC enforces?", options: ["At least 5", "At least 15", "At least 50", "At least 100"], correct: 1 },
+      { q: "Your employer refuses to promote you because of your religion. Which right does this violate?", options: ["The right to work free of harassment", "The right to keep medical information private", "The right to work free of discrimination", "The right to request workplace changes"], correct: 2 },
+      { q: "At what age are workers protected from age discrimination under EEOC law?", options: ["Under 18", "40 or older", "21 to 30", "All ages equally"], correct: 1 },
+      { q: "You report unfair treatment to HR. The next week your hours are cut as punishment. What right protects you?", options: ["The right to work free of discrimination", "The right to keep medical information private", "The right to be protected from retaliation", "The right to request reasonable workplace changes"], correct: 2 },
+      { q: "If you request a schedule change because of a medical condition, is your employer required to grant it?", options: ["Yes, always, no exceptions", "No, and they don't have to consider it at all", "No, but they should carefully consider the request", "Only after one year on the job"], correct: 2 },
+      { q: "What is generally true about medical information you share with your employer?", options: ["It can be freely discussed with coworkers", "It should be kept private, with very limited exceptions", "It becomes public record", "It can be shared with future employers"], correct: 1 },
+      { q: "Can you still be protected from retaliation even if your original complaint turns out not to involve illegal conduct?", options: ["No, protection only applies if you were correct", "Yes, as long as you complained in good faith", "Only if a lawyer filed the complaint for you", "No, retaliation protection does not exist"], correct: 1 },
+      { q: "If you believe you're experiencing unfair treatment not covered by federal law, what should you do first?", options: ["Assume nothing can be done", "Quit your job immediately", "Check state/local laws, your company's policies, or call the EEOC hotline", "Post about it on social media"], correct: 2 },
+      { q: "Which of these workers is still protected even without U.S. citizenship or work authorization status?", options: ["None of them", "Only permanent residents", "Applicants and employees, regardless of citizenship or work authorization status", "Only employees who have worked more than 5 years"], correct: 2 }
+    ]
+  },
+  {
+    id: "harassment",
+    name: "Harassment: Signs, Definition & Reporting",
+    subtitle: "How to recognize illegal harassment and what to do about it",
+    attribution: "Adapted from materials published by the U.S. Equal Employment Opportunity Commission (EEOC)",
+    contentHtml: `
+      <p>Workplace harassment based on race, color, national origin, sex, religion, disability, age (40 or older), or genetic information is illegal. You're also protected from being harassed or punished because you &mdash; or someone close to you, like a relative or close friend &mdash; complains about harassment. This is your right to be protected from retaliation.</p>
+      <p>Harassment can be verbal, physical, or visual, and it can happen on or off the job site. The harasser could be a manager, a manager in another area, a coworker, or others in your workplace, such as clients or customers. In general, teasing, casual comments, or single instances of inappropriate conduct are not illegal &mdash; for behavior to count as illegal harassment, it must be unwelcome, and it must be severe (very serious) or pervasive (happening frequently). Inappropriate behavior is also illegal if it results in your employer making an employment decision about you, such as refusing to promote you or demoting you.</p>
+      <h3>Harassment Doesn't Always Look Obvious</h3>
+      <p>Unwelcome sexual attention does not require physical contact or an explicit demand to count as harassment &mdash; repeated comments, unwanted messages, or someone "accidentally" showing up where you are can be enough. And if a supervisor dismisses a complaint or laughs it off, that does not excuse the employer's responsibility to stop the harassment.</p>
+      <h3>Real Examples from Student Interns</h3>
+      <ul>
+        <li><strong>Luisa</strong>, a marketing intern, is offered a ride home by her supervisor, who then asks her out. When she says she'd rather keep things professional, he removes her from her shifts and her project the next day &mdash; this is sexual harassment, and the retaliation that followed is illegal too.</li>
+        <li><strong>Marcus</strong>, who stocks shelves at a grocery store, is repeatedly called "the foreigner" by a coworker mocking his accent in front of customers &mdash; this is harassment based on national origin.</li>
+        <li><strong>Priya</strong>, a restaurant host, has a manager who comments on her body and corners her in a walk-in freezer. She reports it and is cut from the schedule a week later with no explanation &mdash; both the harassment and the retaliation are illegal.</li>
+        <li><strong>Devon</strong>, who has a learning disability, is mocked by a coworker for how he reads order tickets. His supervisor laughs it off as the coworker "just messing around" &mdash; this is disability harassment, and the supervisor's inaction doesn't excuse the employer.</li>
+        <li><strong>Amara</strong>, 16, works at a movie theater where an older coworker comments on her age, messages her outside of work, and keeps "accidentally" running into her near her locker &mdash; this is sexual harassment, even though nothing has "happened" yet.</li>
+      </ul>
+      <h3>What To Do</h3>
+      <p>Take steps early, before harassment becomes severe or pervasive. Tell the harasser you find their behavior unwelcome, if you feel comfortable doing so. If you don't feel comfortable confronting them, or the harassment doesn't stop, tell your employer, your parents, another trusted adult, or the EEOC. Find out if your company has a harassment policy and who is responsible for handling it &mdash; once your employer knows, they're responsible for correcting the situation. If you don't promptly report workplace harassment, it may affect your rights.</p>
+    `,
+    calloutHtml: `
+      <div class="callout gold">
+        <span class="co-label">IMPORTANT &mdash; WBL INTERNS</span>
+        Report harassment to your employer <strong>and</strong> your WCSD internship instructor right away. Waiting to report can affect your rights, and your instructor can help you navigate the situation safely.
+      </div>
+    `,
+    questions: [
+      { q: "Which of these is protected against workplace harassment under EEOC law?", options: ["Only race and color", "Race, color, national origin, sex, religion, disability, age 40+, and genetic information", "Only sex-based harassment", "Only harassment by managers"], correct: 1 },
+      { q: "Who can be considered a harasser under these laws?", options: ["Only your direct manager", "Only coworkers", "A manager, coworker, client, or customer", "Only people outside the company"], correct: 2 },
+      { q: "For inappropriate behavior to count as illegal harassment, it generally must be:", options: ["Reported in writing", "Severe or pervasive", "Witnessed by a manager", "Repeated at least 10 times"], correct: 1 },
+      { q: "If harassment results in a negative job action, like being demoted or cut from the schedule, this is:", options: ["Unrelated to harassment law", "Still potentially illegal harassment", "Only illegal if it happens twice", "Only illegal for adult employees"], correct: 1 },
+      { q: "As a WBL intern, if harassment continues after you've addressed it, who should you tell in addition to your employer?", options: ["No one else needs to know", "Your WCSD internship coordinator/instructor", "Only your friends", "Nobody, it's not their concern"], correct: 1 },
+      { q: "In the training example, a supervisor removed an intern from her shifts the day after she declined his invitation to dinner. This is an example of:", options: ["A normal scheduling decision", "Likely illegal retaliation", "A performance issue", "A misunderstanding that doesn't need reporting"], correct: 1 },
+      { q: "Why is it important to report harassment promptly?", options: ["It isn't important, you can wait as long as you want", "Delaying a report may affect your rights", "Reporting late gets you a bigger settlement", "Only adults need to report promptly"], correct: 1 },
+      { q: "In Devon's example, his supervisor laughed off the harassment as the coworker \"just messing around.\" What does this mean for the employer?", options: ["The employer is off the hook since the supervisor didn't take it seriously", "The employer's responsibility to stop the harassment still applies", "It means it wasn't really harassment", "Devon should have laughed along too"], correct: 1 },
+      { q: "Which statement is true about unwelcome sexual attention and harassment?", options: ["It always requires physical touching to count as harassment", "It can count as harassment even without physical contact or an explicit demand", "It only counts as harassment if a manager witnesses it", "It only applies to adult employees"], correct: 1 },
+      { q: "Before you're harassed, it's a good idea to find out whether your company has a policy that tells you:", options: ["The company dress code", "Who is responsible for handling harassment complaints", "How much overtime pay you'll receive", "The company's holiday schedule"], correct: 1 }
+    ]
+  },
+  {
+    id: "grooming",
+    name: "Recognizing Grooming Behavior",
+    subtitle: "How predators build trust before causing harm, and how to spot it",
+    attribution: "Adapted from materials published by RAINN, the Rape, Abuse & Incest National Network",
+    contentHtml: `
+      <h3>What Grooming Is</h3>
+      <p>Grooming is the deliberate act of building trust with a child, teen, or at-risk adult for the purpose of exploiting them sexually. It typically starts with friendship, mentorship, or kindness that gradually turns into manipulation and control. Grooming is a process, not a one-time event &mdash; it's perpetrated over weeks, months, or years, and often extends to the victim's family and community so the abuser can build trust with anyone who might interfere. The damage is real and lasting: long-term manipulation, eventual abuse, and the survivor's later realization that someone they trusted exploited them.</p>
+      <h3>Who Is At Risk</h3>
+      <p>Grooming can happen to anyone, but two groups face the highest risk. <strong>Children</strong> are still developing their understanding of boundaries and trust, are often taught to obey adults without question, and can easily confuse attention with genuine affection. <strong>At-risk adults</strong> &mdash; people who rely on others for care, support, or resources, such as someone with a disability or someone facing financial or housing instability &mdash; can be targeted by someone who controls their resources, support, or safety, including through a caregiver, employer, or partner relationship.</p>
+      <h3>What Grooming Looks Like</h3>
+      <p>Grooming commonly combines three tactics. <strong>Physical grooming</strong> starts with "accidental" touches that gradually escalate &mdash; tickling, wrestling, hugging &mdash; before becoming sexual. <strong>Psychological grooming</strong> uses gifts, special attention, secret communication, and guilt, and often exploits power differences like age, size, or status. <strong>Community grooming</strong> is how an abuser builds a "good person" reputation with the victim's family, friends, and community to avoid detection and clear the way to commit abuse. Perpetrators can be anyone &mdash; acquaintances, coworkers, coaches, or people in positions of trust and authority, like a supervisor or mentor.</p>
+      <h3>Age Gaps and the Law</h3>
+      <p>Age alone doesn't make someone a predator, and it doesn't automatically make a relationship abusive. The concern arises when someone uses their age, authority, or life experience to exploit a person's developmental stage for their own gratification. A legal age of consent does not by itself make a relationship safe &mdash; grooming and exploitation often begin long before someone reaches that age, and at-risk adults can be manipulated regardless of their legal status. The real issue is power and exploitation, not just age or legality. Non-abusive relationships are rooted in mutual respect and freely given consent.</p>
+      <h3>Red Flags to Watch For</h3>
+      <ul>
+        <li><strong>Isolating:</strong> persistent attempts to be alone with you, or discouraging other adults from being involved.</li>
+        <li><strong>Secrecy:</strong> asking you to keep things private, using private texts or DMs, or normalizing lying to others.</li>
+        <li><strong>Ignoring boundaries:</strong> excessive or unnecessary touching, sexual jokes, or disregard for your privacy.</li>
+        <li><strong>Special treatment:</strong> favoritism, unexplained gifts or favors, or compliments about your body or appearance.</li>
+        <li><strong>Role creep:</strong> someone inserting themselves into your life in ways that go far beyond what's expected of their actual role.</li>
+      </ul>
+      <h3>What To Do If You Notice These Signs</h3>
+      <p>Trust your intuition &mdash; you don't need to be certain something is wrong to speak up. If it's safe to do so, address the behavior directly and clearly. Keep a record of what happened, with dates, names, and details, and save any evidence like texts or messages. Report your concerns promptly to a trusted adult or your WCSD internship instructor &mdash; you don't need to investigate or confirm anything first; that's the job of the people you report to. Never confront a suspected abuser if you feel unsafe doing so.</p>
+    `,
+    calloutHtml: `
+      <div class="callout gold">
+        <span class="co-label">IMPORTANT</span>
+        Trust your instincts and report early. For confidential support, RAINN's National Sexual Assault Hotline is available 24/7 at 800.656.HOPE (4673), by chat at RAINN.org/hotline, or by texting "HOPE" to 64673.
+      </div>
+    `,
+    questions: [
+      { q: "Grooming is best described as:", options: ["A single inappropriate comment", "A deliberate, gradual process of building trust to enable sexual abuse", "A type of workplace training", "A background check process"], correct: 1 },
+      { q: "Grooming typically unfolds:", options: ["In a single conversation", "Over weeks, months, or years", "Only through text messages", "Only between strangers"], correct: 1 },
+      { q: "\"Community grooming\" refers to:", options: ["Group therapy sessions", "An abuser building a trusted reputation with family, friends, and community to avoid suspicion", "A community service requirement", "A type of team-building event"], correct: 1 },
+      { q: "Which relationship dynamic can create a higher risk for grooming?", options: ["Peer-to-peer friendships only", "Power imbalances, such as supervisor and intern", "Relationships between family members only", "None, grooming risk is random"], correct: 1 },
+      { q: "Which of the following is a red flag for grooming behavior?", options: ["A supervisor treats all interns the same", "Someone repeatedly asks to be alone with you and asks you to keep it secret", "A coworker says hello in the morning", "A manager gives clear, public feedback to the whole team"], correct: 1 },
+      { q: "Does a legal age of consent alone guarantee a relationship isn't exploitative?", options: ["Yes, if it's legal it's automatically fine", "No, power and exploitation matter beyond just legal age", "Age of consent doesn't apply to grooming at all", "Only law enforcement can decide this, age is irrelevant"], correct: 1 },
+      { q: "If an adult at your workplace gives you gifts, texts you privately, and asks you to keep it secret from your parents or supervisor, you should:", options: ["Assume it's normal mentorship", "Recognize these as warning signs and tell a trusted adult", "Keep the secret so you don't seem ungrateful", "Wait to see if it gets worse before saying anything"], correct: 1 },
+      { q: "When reporting suspected grooming, experts recommend that you:", options: ["Investigate and confirm it's true before reporting", "Report your concerns promptly, without trying to investigate first", "Only report if you have video evidence", "Handle it privately without telling anyone"], correct: 1 },
+      { q: "Besides children, which other group is highlighted as being at high risk for grooming?", options: ["Coworkers of the same age", "At-risk adults, such as those who depend on others for care or support", "Only people who live alone", "Only people over age 65"], correct: 1 },
+      { q: "What is a recommended first step for documenting a concern about possible grooming?", options: ["Post about it on social media", "Keep a record with dates, names, and details", "Wait a year to see if it happens again", "Confront the person publicly"], correct: 1 }
+    ]
+  },
+  {
+    id: "trafficking",
+    name: "Human Trafficking Awareness",
+    subtitle: "Common indicators and how to report suspected trafficking safely",
+    attribution: "Adapted from materials published by the U.S. Department of Homeland Security's Blue Campaign",
+    contentHtml: `
+      <p>Human trafficking can affect anyone, and everyone has a role to play in spotting it. Not all indicators are present in every trafficking situation, and the presence or absence of any one sign is not proof by itself &mdash; investigating suspected cases is the job of law enforcement. Knowing the common indicators helps you recognize when something may be wrong and get the right people involved.</p>
+      <h3>Behavioral Indicators</h3>
+      <p>Watch for signs like someone appearing disconnected from family, friends, or community with no clear explanation; a child who has suddenly stopped attending school; a sudden or dramatic change in someone's behavior; or someone who seems disoriented, confused, fearful, timid, or submissive. Also notice whether the person appears to be coached on what to say, or is often in the company of someone they defer to &mdash; someone who seems to control where they go or who they talk to.</p>
+      <h3>Physical and Living-Condition Indicators</h3>
+      <p>Physical signs can include bruises in various stages of healing, or signs of being denied food, water, sleep, or medical care. Living-condition indicators include unsuitable or unstable living conditions, a lack of personal possessions, and restricted freedom of movement &mdash; for example, the person cannot freely leave where they live, or unreasonable security measures are in place.</p>
+      <h3>A Note on Minors</h3>
+      <p>One indicator deserves special attention: whether a juvenile is engaged in commercial sex acts. If a minor is involved in commercial sex, that alone is treated as a trafficking indicator under federal law, regardless of whether force, fraud, or coercion is visible.</p>
+      <p>If you suspect trafficking, never confront the suspected trafficker or alert the victim to your suspicions &mdash; your safety and theirs comes first. Instead, report what you noticed to law enforcement or one of the hotlines below.</p>
+    `,
+    calloutHtml: `
+      <div class="stat-box">
+        <div class="stat-label">ICE HSI Tip Line &middot; 24/7</div>
+        <div class="stat-num">1-866-347-2423</div>
+        <div class="stat-label">National Human Trafficking Hotline &middot; 24/7</div>
+        <div class="stat-num">1-888-373-7888</div>
+        <div class="stat-caption">Or text HELP or INFO to 233733 (BeFree). Both lines are free and confidential.</div>
+      </div>
+    `,
+    questions: [
+      { q: "According to this training, who is responsible for investigating suspected human trafficking?", options: ["Any concerned citizen", "Law enforcement", "The victim's employer", "School administrators"], correct: 1 },
+      { q: "Which of these could be a possible indicator of human trafficking?", options: ["Someone appears disconnected from family and community, with no clear explanation", "Someone takes regular lunch breaks", "Someone has a normal work schedule", "Someone talks openly about their weekend plans"], correct: 0 },
+      { q: "Which physical sign might indicate possible trafficking or abuse?", options: ["A neat uniform", "Bruises in various stages of healing", "New shoes", "A confident handshake"], correct: 1 },
+      { q: "If you suspect someone is being trafficked, what should you do?", options: ["Confront the suspected trafficker directly", "Alert the victim to your suspicions immediately", "Avoid direct confrontation and report to law enforcement or a hotline", "Do nothing since it's not your business"], correct: 2 },
+      { q: "What is the number for the ICE Homeland Security Investigations Tip Line?", options: ["1-800-669-4000", "1-866-347-2423", "911", "1-888-373-7888"], correct: 1 },
+      { q: "What is the National Human Trafficking Hotline number?", options: ["1-866-347-2423", "1-888-373-7888", "1-800-656-4673", "211"], correct: 1 },
+      { q: "Is the National Human Trafficking Hotline a law enforcement agency?", options: ["Yes, it's run by the FBI", "No, it's operated by a federally funded nongovernmental organization", "Yes, it's run by ICE", "No, it's run by a private company with no funding"], correct: 1 },
+      { q: "Why is your safety emphasized when reporting suspected trafficking?", options: ["It isn't important", "Confronting a trafficker directly could endanger you and the victim", "Reporting is illegal", "You should always intervene physically"], correct: 1 },
+      { q: "If a minor is engaged in commercial sex acts, this is:", options: ["Never considered a trafficking indicator", "Treated as a trafficking indicator under federal law, regardless of visible force or coercion", "Only a concern if the minor asks for help", "Not something you should ever report"], correct: 1 },
+      { q: "Which of these is a living-condition indicator of possible trafficking?", options: ["A stable address and lots of personal belongings", "Restricted freedom of movement and a lack of personal possessions", "A regular daily schedule", "Living with family members"], correct: 1 }
+    ]
+  },
+  {
+    id: "relationships",
+    name: "Building Strong Working Relationships",
+    subtitle: "Practical habits that build trust and set you up for success",
+    attribution: "Adapted from materials published by Indeed.com",
+    contentHtml: `
+      <p>Positive relationships with coworkers are a major part of career success. Employees with strong workplace relationships report higher job satisfaction, better productivity, and more support when things get stressful &mdash; along with higher retention and more comfort in meetings and presentations. All of this matters during your internship and beyond.</p>
+      <h3>Core Elements</h3>
+      <p>Good workplace relationships tend to share a few key elements: <strong>trust</strong> &mdash; the ability to rely on your coworkers; <strong>acceptance</strong> &mdash; understanding one another's role; being a reliable <strong>team member</strong> who does their fair share and gives credit where it's due; and <strong>open communication</strong> &mdash; asking questions and getting to know your coworkers.</p>
+      <h3>Know Yourself First</h3>
+      <p>Before you can build strong relationships with others, it helps to understand your own emotional intelligence:</p>
+      <ul>
+        <li><strong>Self-awareness:</strong> knowing your own needs and wants in your career and relationships.</li>
+        <li><strong>Self-regulation:</strong> managing your emotions and reactions with your long-term goals in mind.</li>
+        <li><strong>Empathy:</strong> understanding and relating to someone else's situation.</li>
+        <li><strong>Social skills:</strong> teamwork, communication, conflict resolution, and problem-solving.</li>
+      </ul>
+      <h3>Practical Habits</h3>
+      <p>In practice, this looks like asking questions and genuinely listening &mdash; giving coworkers the chance to share before you do, which builds your reputation as a good communicator. It means offering help when a coworker is overwhelmed, and being willing to ask for help yourself; relationships involve both give and take. It also means appreciating that every coworker's role comes with different goals and pressures, rather than jumping to blame when something goes wrong.</p>
+      <h3>Follow Through</h3>
+      <p>Two habits matter more than almost anything else: keeping your commitments, so people know they can rely on you (and being realistic when you can't, rather than overpromising), and being present &mdash; putting away distractions like your phone and giving your full attention to the people and tasks in front of you.</p>
+    `,
+    calloutHtml: `
+      <div class="callout green">
+        <span class="co-label">KEY TAKEAWAY</span>
+        Strong workplace relationships are built through small, consistent actions: show up, listen, follow through, and treat every coworker's contribution with respect.
+      </div>
+    `,
+    questions: [
+      { q: "Which of these is a benefit of strong workplace relationships?", options: ["Increased productivity and job satisfaction", "Guaranteed promotions", "Lower pay", "Fewer work responsibilities"], correct: 0 },
+      { q: "Which of the following is one of the core elements of a good workplace relationship described in this training?", options: ["Competition", "Trust", "Avoidance", "Secrecy"], correct: 1 },
+      { q: "Being a good team member includes:", options: ["Taking credit for others' work", "Doing your fair share and giving credit when it's due", "Avoiding group projects", "Only helping when asked directly"], correct: 1 },
+      { q: "Self-awareness, self-regulation, empathy, and social skills are all part of:", options: ["Emotional intelligence", "A job application", "A performance review", "A company handbook"], correct: 0 },
+      { q: "Which is a practical way to build relationships with coworkers, according to this training?", options: ["Avoid asking personal questions", "Ask questions and actively listen", "Only talk about yourself", "Multitask during conversations"], correct: 1 },
+      { q: "Offering to help a struggling coworker demonstrates:", options: ["Weakness", "Trust and reliability", "Poor time management", "Favoritism"], correct: 1 },
+      { q: "Why is it useful to appreciate each coworker's role, even in a different department?", options: ["It helps you place blame more easily", "It helps you understand different goals and avoid unnecessary conflict", "It's not useful", "It only matters for managers"], correct: 1 },
+      { q: "What does \"keeping your commitments\" build in the workplace?", options: ["Trust", "Competition", "Distance", "Confusion"], correct: 0 },
+      { q: "Which of these is an example of \"being present\" at work?", options: ["Checking your phone during a meeting", "Paying full attention to the people and tasks in front of you", "Working on other tasks while someone is talking to you", "Skipping team meetings"], correct: 1 },
+      { q: "Which emotional intelligence component means managing your emotions and reactions with long-term goals in mind?", options: ["Empathy", "Self-regulation", "Social skills", "Self-awareness"], correct: 1 }
+    ]
+  }
+];
+
+/* =========================================================================
+   STATE + PERSISTENCE
+   ========================================================================= */
+const STORAGE_KEY = "wcsd_wbl_training_v1";
+
+function loadProgress() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && Array.isArray(parsed.mastered) && parsed.mastered.length === SECTIONS.length) {
+        return parsed;
+      }
+    }
+  } catch (e) { /* localStorage unavailable, fall back to in-memory only */ }
+  return null;
+}
+
+function saveProgress() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      studentName: state.studentName,
+      studentId: state.studentId,
+      mastered: state.mastered
+    }));
+  } catch (e) { /* ignore */ }
+}
+
+const saved = loadProgress();
+const state = {
+  studentName: saved ? saved.studentName : "",
+  studentId: saved ? (saved.studentId || "") : "",
+  screen: "landing",
+  activeSectionIndex: 0,
+  mastered: saved ? saved.mastered : SECTIONS.map(() => false),
+  activeQuiz: null,
+  answers: null,
+  lastScore: null
+};
+
+const root = document.getElementById("appRoot");
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  }[c]));
+}
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function buildShuffledQuiz(sec) {
+  return shuffle(sec.questions).map(q => {
+    const order = shuffle(q.options.map((_, i) => i));
+    const options = order.map(i => q.options[i]);
+    const correct = order.indexOf(q.correct);
+    return { q: q.q, options, correct };
+  });
+}
+
+function isUnlocked(i) { return i === 0 || state.mastered[i - 1]; }
+function allMastered() { return state.mastered.every(m => m); }
+
+/* =========================================================================
+   RENDER: LANDING
+   ========================================================================= */
+function renderLanding() {
+  const topicsHtml = SECTIONS.map((sec, i) => {
+    const done = state.mastered[i];
+    const unlocked = isUnlocked(i);
+    let badge, btn;
+    if (done) {
+      badge = `<span class="badge done">Mastered</span>`;
+      btn = `<button class="btn-secondary" onclick="reviewSection(${i})">Review</button>`;
+    } else if (unlocked) {
+      badge = `<span class="badge todo">Not started</span>`;
+      btn = `<button class="btn-primary" onclick="startSection(${i})">Start</button>`;
+    } else {
+      badge = `<span class="badge locked">Locked</span>`;
+      btn = `<button class="btn-secondary" disabled>Locked</button>`;
+    }
+    return `
+      <div class="topic-item ${unlocked ? "" : "locked"}">
+        <div class="t-num">${i + 1}</div>
+        <div style="flex:1;">
+          <div class="t-name">${esc(sec.name)}</div>
+          <div class="t-status">${esc(sec.subtitle)}</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px;">
+          ${badge}
+          ${btn}
+        </div>
+      </div>`;
+  }).join("");
+
+  const finished = allMastered();
+
+  root.innerHTML = `
+    <div class="card">
+      <div class="card-body">
+        <h2 class="section-title">Welcome</h2>
+        <p style="margin:0 0 12px;">This training covers five required safety topics before you begin your Work-Based Learning internship. Complete topics in order &mdash; each one unlocks the next once you score 100% on its quiz. You can complete one topic at a time and come back later; your progress is saved on this device.</p>
+        <label for="studentNameInput">Your full name</label>
+        <input type="text" id="studentNameInput" placeholder="e.g. Jordan Smith" value="${esc(state.studentName)}">
+        <div class="error-msg" id="nameError">Please enter your name before starting a topic.</div>
+        <label for="studentIdInput">Your WCSD Student ID number</label>
+        <input type="text" id="studentIdInput" placeholder="e.g. 123456" inputmode="numeric" value="${esc(state.studentId)}">
+        <div class="error-msg" id="idError">Please enter your student ID number before starting a topic.</div>
+      </div>
+    </div>
+
+    ${finished ? `
+    <div class="card">
+      <div class="card-body" style="text-align:center;">
+        <h2 class="section-title" style="margin-bottom:6px;">All 5 topics complete</h2>
+        <p style="margin:0 0 12px;">Great work. You can now view and print your certificate of completion.</p>
+        <button class="btn-gold" onclick="goToCertificate()">View Certificate</button>
+      </div>
+    </div>` : ""}
+
+    <div class="card">
+      <div class="card-body">
+        <h2 class="section-title" style="margin-bottom:12px;">Training Topics</h2>
+        <div class="topic-list">${topicsHtml}</div>
+      </div>
+    </div>
+    <p class="footer-note">WCSD Work-Based Learning Internship Program &middot; Safety Training Series</p>
+  `;
+
+  document.getElementById("studentNameInput").addEventListener("input", (e) => {
+    state.studentName = e.target.value;
+    saveProgress();
+  });
+  document.getElementById("studentIdInput").addEventListener("input", (e) => {
+    state.studentId = e.target.value;
+    saveProgress();
+  });
+}
+
+function requireName() {
+  const nameInput = document.getElementById("studentNameInput");
+  const idInput = document.getElementById("studentIdInput");
+  const name = nameInput ? nameInput.value.trim() : state.studentName.trim();
+  const id = idInput ? idInput.value.trim() : state.studentId.trim();
+  let ok = true;
+  document.getElementById("nameError").style.display = "none";
+  document.getElementById("idError").style.display = "none";
+  if (!name) {
+    document.getElementById("nameError").style.display = "block";
+    ok = false;
+  }
+  if (!id) {
+    document.getElementById("idError").style.display = "block";
+    ok = false;
+  }
+  if (!ok) return false;
+  state.studentName = name;
+  state.studentId = id;
+  saveProgress();
+  return true;
+}
+
+function startSection(index) {
+  if (!requireName()) return;
+  state.activeSectionIndex = index;
+  state.screen = "content";
+  render();
+}
+
+function reviewSection(index) {
+  if (!requireName()) return;
+  state.activeSectionIndex = index;
+  state.screen = "review";
+  render();
+}
+
+/* =========================================================================
+   RENDER: CONTENT (reading step, first pass)
+   ========================================================================= */
+function renderContent() {
+  const sec = SECTIONS[state.activeSectionIndex];
+  root.innerHTML = `
+    <div class="banner">${esc(sec.name)}</div>
+    <div class="card" style="border-top:none; border-radius:0 0 8px 8px;">
+      <div class="card-body">
+        ${stepperHtml("content")}
+        <p class="attribution" style="margin-top:12px;">${esc(sec.attribution)}</p>
+        <div class="content-body">${sec.contentHtml}</div>
+        ${sec.calloutHtml}
+        <div class="btn-row">
+          <button class="btn-secondary" onclick="backToLanding()">&larr; Back to topics</button>
+          <button class="btn-primary" onclick="goToQuiz()">I've read this &mdash; Start the quiz</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+/* Read-only review for an already-mastered topic (no quiz gate) */
+function renderReview() {
+  const sec = SECTIONS[state.activeSectionIndex];
+  root.innerHTML = `
+    <div class="banner">${esc(sec.name)}</div>
+    <div class="card" style="border-top:none; border-radius:0 0 8px 8px;">
+      <div class="card-body">
+        <span class="badge done" style="margin-bottom:10px; display:inline-block;">Mastered</span>
+        <p class="attribution">${esc(sec.attribution)}</p>
+        <div class="content-body">${sec.contentHtml}</div>
+        ${sec.calloutHtml}
+        <div class="btn-row">
+          <button class="btn-secondary" onclick="backToLanding()">&larr; Back to topics</button>
+          <button class="btn-primary" onclick="startSection(${state.activeSectionIndex})">Retake Quiz</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function stepperHtml(step) {
+  const stepsOrder = ["content", "quiz", "results"];
+  const stepIdx = stepsOrder.indexOf(step);
+  const labels = ["1. Read", "2. Quiz", "3. Score"];
+  return `<div class="stepper">${labels.map((label, i) => {
+    let cls = "step";
+    if (i < stepIdx) cls += " mastered";
+    else if (i === stepIdx) cls += " current";
+    else cls += " locked";
+    return `<div class="${cls}">${label}</div>`;
+  }).join("")}</div>`;
+}
+
+function backToLanding() {
+  state.screen = "landing";
+  render();
+}
+
+/* =========================================================================
+   RENDER: QUIZ
+   ========================================================================= */
+function goToQuiz() {
+  const sec = SECTIONS[state.activeSectionIndex];
+  state.activeQuiz = buildShuffledQuiz(sec);
+  state.answers = new Array(state.activeQuiz.length).fill(null);
+  state.screen = "quiz";
+  render();
+}
+
+function renderQuiz() {
+  const sec = SECTIONS[state.activeSectionIndex];
+  const quiz = state.activeQuiz;
+  const answers = state.answers;
+  const total = quiz.length;
+
+  const qHtml = quiz.map((q, qi) => {
+    const optsHtml = q.options.map((opt, oi) => `
+      <label class="opt-label">
+        <input type="radio" name="q${qi}" value="${oi}" ${answers[qi] === oi ? "checked" : ""}
+          onchange="setAnswer(${qi}, ${oi})">
+        <span>${esc(opt)}</span>
+      </label>
+    `).join("");
+    return `
+      <div class="quiz-q">
+        <div class="q-text">${qi + 1}. ${esc(q.q)}</div>
+        ${optsHtml}
+      </div>
+    `;
+  }).join("");
+
+  root.innerHTML = `
+    <div class="banner">${esc(sec.name)} &mdash; Quiz</div>
+    <div class="card" style="border-top:none; border-radius:0 0 8px 8px;">
+      <div class="card-body">
+        ${stepperHtml("quiz")}
+        <p style="margin:12px 0 0;">You need <strong>100% (${total}/${total})</strong> to master this topic. You can retake the quiz as many times as you need &mdash; questions and answer order are reshuffled each time.</p>
+        ${qHtml}
+        <div class="error-msg" id="quizError">Please answer every question before submitting.</div>
+        <div class="btn-row">
+          <button class="btn-secondary" onclick="backToContentFromQuiz()">&larr; Back to reading</button>
+          <button class="btn-primary" onclick="submitQuiz()">Submit Quiz</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function setAnswer(qIndex, optIndex) {
+  state.answers[qIndex] = optIndex;
+}
+
+function backToContentFromQuiz() {
+  state.screen = "content";
+  render();
+}
+
+function submitQuiz() {
+  const quiz = state.activeQuiz;
+  const answers = state.answers;
+  if (answers.some(a => a === null)) {
+    document.getElementById("quizError").style.display = "block";
+    return;
+  }
+  let correctCount = 0;
+  answers.forEach((a, i) => { if (a === quiz[i].correct) correctCount++; });
+  state.lastScore = { correct: correctCount, total: quiz.length };
+  if (correctCount === quiz.length) {
+    state.mastered[state.activeSectionIndex] = true;
+    saveProgress();
+  }
+  state.screen = "results";
+  render();
+}
+
+/* =========================================================================
+   RENDER: RESULTS
+   ========================================================================= */
+function renderResults() {
+  const sec = SECTIONS[state.activeSectionIndex];
+  const quiz = state.activeQuiz;
+  const answers = state.answers;
+  const { correct, total } = state.lastScore;
+  const pct = Math.round((correct / total) * 100);
+  const passed = correct === total;
+
+  const reviewHtml = quiz.map((q, qi) => {
+    const studentAnswer = answers[qi];
+    const isCorrect = studentAnswer === q.correct;
+    const optsHtml = q.options.map((opt, oi) => {
+      let cls = "opt-label";
+      if (oi === q.correct) cls += " correct";
+      else if (oi === studentAnswer && !isCorrect) cls += " incorrect";
+      return `<div class="${cls}">${esc(opt)}${oi === studentAnswer ? " &nbsp;<strong>(your answer)</strong>" : ""}</div>`;
+    }).join("");
+    return `
+      <div class="quiz-q">
+        <div class="q-text">${qi + 1}. ${esc(q.q)} ${isCorrect ? "&#9989;" : "&#10060;"}</div>
+        ${optsHtml}
+      </div>
+    `;
+  }).join("");
+
+  const isLastSection = state.activeSectionIndex === SECTIONS.length - 1;
+
+  root.innerHTML = `
+    <div class="banner">${esc(sec.name)} &mdash; Results</div>
+    <div class="card" style="border-top:none; border-radius:0 0 8px 8px;">
+      <div class="card-body">
+        ${stepperHtml("results")}
+        <div class="score-box ${passed ? "pass" : ""}" style="margin-top:14px;">
+          <div class="score-num">${correct} / ${total}</div>
+          <div class="score-label">${pct}% correct</div>
+          <div class="pass-pill ${passed ? "pass" : "review"}">${passed ? "Topic Mastered!" : "100% required &mdash; review and try again"}</div>
+        </div>
+        <p style="margin:0 0 6px;"><strong>${esc(state.studentName)}</strong>, here's a review of every question with the correct answer marked.</p>
+        ${reviewHtml}
+        <div class="btn-row">
+          ${passed
+            ? (isLastSection
+                ? `<button class="btn-gold" onclick="goToCertificate()">View Certificate</button>`
+                : `<button class="btn-primary" onclick="backToLanding()">Continue to Next Topic &rarr;</button>`)
+            : `<button class="btn-primary" onclick="backToContentFromQuiz()">Review Material Again</button>
+               <button class="btn-secondary" onclick="goToQuiz()">Try Quiz Again</button>`
+          }
+          <button class="btn-secondary" onclick="backToLanding()">Back to Topics</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+/* =========================================================================
+   RENDER: CERTIFICATE
+   ========================================================================= */
+function goToCertificate() {
+  state.screen = "certificate";
+  render();
+}
+
+function renderCertificate() {
+  const dateStr = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+  const topicsHtml = SECTIONS.map(sec => `
+    <li><span>${esc(sec.name)}</span><span class="cert-check">&#10003; Mastered &mdash; 100%</span></li>
+  `).join("");
+
+  root.innerHTML = `
+    <div class="card no-print" style="margin-bottom:10px;">
+      <div class="card-body" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <div>Print or save this certificate as a PDF, then submit it to your internship instructor.</div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn-secondary" onclick="backToLanding()">&larr; Back to topics</button>
+          <button class="btn-gold" onclick="window.print()">Print / Save as PDF</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="certificateArea">
+      <div class="card-body">
+        <div class="cert-header">
+          <div class="cert-org">Washoe County School District</div>
+          <h2>WCSD Work-Based Learning Safety Training</h2>
+          <div style="font-size:13px; color:var(--gray); margin-top:2px;">Certificate of Completion</div>
+        </div>
+        <div class="cert-name">${esc(state.studentName)}</div>
+        <div class="cert-date">Student ID: ${esc(state.studentId)} &middot; Completed ${dateStr}</div>
+        <ul class="cert-topics">${topicsHtml}</ul>
+        <div class="callout brown" style="margin-top:18px;">
+          <span class="co-label">WCSD REQUIREMENT</span>
+          You <strong>MUST</strong> submit a copy of this PDF to your WCSD internship instructor before you begin service at a job site as an intern.
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+/* =========================================================================
+   ROUTER
+   ========================================================================= */
+function render() {
+  if (state.screen === "landing") renderLanding();
+  else if (state.screen === "content") renderContent();
+  else if (state.screen === "review") renderReview();
+  else if (state.screen === "quiz") renderQuiz();
+  else if (state.screen === "results") renderResults();
+  else if (state.screen === "certificate") renderCertificate();
+}
+
+render();
+</script>
+</body>
+</html>
